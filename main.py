@@ -1,5 +1,12 @@
 from PySide6 import QtCore
 import sys
+import os
+currentPath = os.getcwd()
+detectProcessPath = os.path.join(currentPath,"DetectProcess") 
+trainProcessPath = os.path.join(currentPath,"TrainProcess") 
+sys.path.append(detectProcessPath)
+sys.path.append(trainProcessPath)
+
 import argparse
 
 from TrainProcess.Api import TrainProcess
