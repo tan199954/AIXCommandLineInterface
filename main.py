@@ -9,8 +9,8 @@ sys.path.append(trainProcessPath)
 
 import argparse
 
-from TrainProcess.Api import TrainProcess
-from DetectProcess.Api import DetectProcess
+from TrainProcess.Src.Api import TrainProcess
+from DetectProcess.Src.Api import DetectProcess
 
 def parse_opt():
     parser = argparse.ArgumentParser()
