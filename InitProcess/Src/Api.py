@@ -15,5 +15,5 @@ class InitProcess:
           self.projInputChecker.check()
           self.imwiProjFileService.writeRoot()
           self.datasetService.execute() #create train valid in this folder namseFile to current dir
-          datasetInfo = self.datasetService.getDatasetInfo() #return dataset with dict type
-          self.imwiProjFileService.writeDataset(datasetInfo)
+          datasetInfor = self.datasetService.getDatasetInfor() #return dataset with dict type
+          self.imwiProjFileService.writeDataset(datasetInfor)

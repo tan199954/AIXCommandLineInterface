@@ -14,6 +14,9 @@ class DatasetService(ABC):
      @abstractclassmethod
      def execute(self):
           pass
+     @abstractclassmethod
+     def getDatasetInfor(self)->dict:
+          pass
 class ProjInputChecker(ABC):
      def __init__(self,imagePath: str,labelPath :str) -> None:
           super().__init__()
