@@ -2,9 +2,9 @@ from InitProcess.Src.Service.ImwiProjFileService import ImwiProjFileService
 from InitProcess.Src.Core import TrainType
 from InitProcess.Src.InitAbstractFactory import InitAbstractFactory
 class InitProcess:
-     def __init__(self,imagePath: str,labelPath :str,type:TrainType) -> None:
-          self.imwiProjFileService = ImwiProjFileService(imagePath,labelPath,type)
-          initAbstractFactory = InitAbstractFactory(imagePath,labelPath,type)
+     def __init__(self,imagePath: str,labelPath :str,trainType:TrainType) -> None:
+          self.imwiProjFileService = ImwiProjFileService(imagePath,labelPath,trainType)
+          initAbstractFactory = InitAbstractFactory(imagePath,labelPath,trainType)
           initFactory = initAbstractFactory.getFactory()
           self.projInputChecker = initFactory.createProjInputChecker()
           self.datasetService = initFactory.createDatasetService()

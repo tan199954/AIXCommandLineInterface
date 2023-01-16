@@ -3,7 +3,8 @@ import sys
 currentFilePath=os.path.abspath(__file__)
 testsPath=os.path.dirname(currentFilePath)
 modulePath=os.path.dirname(testsPath)
-sys.path.append(modulePath)
+parentPath=os.path.dirname(modulePath)
+sys.path.append(parentPath)
 
 import unittest
 
@@ -15,5 +16,11 @@ class TestImwiProjFileService(unittest.TestCase):
           self.imwiProjFileService = ImwiProjFileService("d:/image","d:laebl","Seg")
      def testWriteRoot(self):
           self.imwiProjFileService.writeRoot()
+     def testWriteDataset(self):
+          dataset={"trainPath":"hehe",
+                   "validPah":"hihi",
+                   "outputPath":"haha",
+                   "modelFilePath":"huhu"}
+          self.imwiProjFileService.writeDataset(dataset)
 if __name__=="__main__":
      unittest.main()

@@ -1,5 +1,6 @@
 from abc import ABC, abstractclassmethod
 from enum import Enum
+from PySide6 import QtCore
 
 class TrainType(Enum):
      BoundingBox = "BBox"
@@ -20,8 +21,24 @@ class DatasetService(ABC):
 class ProjInputChecker(ABC):
      def __init__(self,imagePath: str,labelPath :str) -> None:
           super().__init__()
-          self.imagePath-imagePath
+          self.imagePath=imagePath
           self.labelPath=labelPath
+          self.generalCheck()
+     def checkExists(self):
+          paths = [self.imagePath,self.labelPath]
+          for path in paths:
+               if not QtCore.QDir(path).exists():
+                    raise Exception(f"{path} is not exists")
+     def checkContainImages(self):
+          paths = [self.imagePath]
+          filters = [ "*.png" , "*.jpg" , "*.bmp"]
+          for path in paths:
+               fileInfoList = QtCore.QDir(path).entryInfoList(filters, QtCore.QDir.Files|QtCore.QDir.NoDotAndDotDot)
+               if not fileInfoList:
+                    raise Exception(f"{path} is not contain image (png,jpg,bmp)")
+     def generalCheck(self):
+          self.checkExists()
+          self.checkContainImages()
      @abstractclassmethod
      def check(self):
           pass
