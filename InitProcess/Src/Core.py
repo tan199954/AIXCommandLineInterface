@@ -1,22 +1,37 @@
 from abc import ABC, abstractclassmethod
 from enum import Enum
 from PySide6 import QtCore
+import os
 
 class TrainType(Enum):
      BoundingBox = "BBox"
      Box = "Box" 
      Segment = "Seg"
      NoneType = None
+class DatasetFormat(ABC):
+     def __init__(self,imagePath: str,labelPath :str) -> None:
+          super().__init__()
+          self.imagePath=imagePath
+          self.labelPath=labelPath
+          currentPath = os.path.dirname(os.getcwd())
+          self.datasetPath=os.path.join(currentPath,"Dataset")
+          self.initDatasetDir()
+     def initDatasetDir(self):
+          if not os.path.exists(self.datasetPath):
+               os.mkdir(self.datasetPath)
+     @abstractclassmethod
+     def makeDirectory(self):
+          pass
 class DatasetService(ABC):
      def __init__(self,imagePath: str,labelPath :str) -> None:
           super().__init__()
-          self.imagePath-imagePath
+          self.imagePath=imagePath
           self.labelPath=labelPath
      @abstractclassmethod
      def execute(self):
           pass
      @abstractclassmethod
-     def getDatasetInfor(self)->dict:
+     def getDatasetInfo(self)->dict:
           pass
 class ProjInputChecker(ABC):
      def __init__(self,imagePath: str,labelPath :str) -> None:

@@ -6,12 +6,12 @@ class BoxProjInputChecker(ProjInputChecker):
      def check(self):
           self.checkLabel()
      def checkLabel(self):
-          #check contain label file
+          #check contains label file
           filters = [ "*.txt"]
           fileInfoList = QtCore.QDir(self.labelPath).entryInfoList(filters, QtCore.QDir.Files|QtCore.QDir.NoDotAndDotDot)
           if not fileInfoList:
-               raise Exception(f"{self.labelPath} is not contain label (*.txt Files)")
-          #check File is format true
+               raise Exception(f"{self.labelPath} is not contains label (*.txt Files)")
+          #check File is true format
           self.checkFile(fileInfoList[0])
      def checkFile(self,txtFileInfo:QtCore.QFileInfo):
           txtInfo=TxtFileInfo(txtFileInfo)
@@ -21,12 +21,12 @@ class BBoxProjInputChecker(ProjInputChecker):
      def check(self):
           self.checkLabel()
      def checkLabel(self):
-          #check contain label file
+          #check contains label file
           filters = [ "*.mark"]
           fileInfoList = QtCore.QDir(self.labelPath).entryInfoList(filters, QtCore.QDir.Files|QtCore.QDir.NoDotAndDotDot)
           if not fileInfoList:
-               raise Exception(f"{self.labelPath} is not contain label (*.mark Files)")
-          #check File is format true
+               raise Exception(f"{self.labelPath} is not contains label (*.mark Files)")
+          #check File is true format
           self.checkFile(fileInfoList[0])
      def checkFile(self,markFileInfo:QtCore.QFileInfo):
           markInfo=MarkFileInfo(markFileInfo)
@@ -36,12 +36,12 @@ class SegProjInputChecker(ProjInputChecker):
      def check(self):
           self.checkLabel()
      def checkLabel(self):
-          #check contain label file
+          #check contains label file
           filters = [ "*.txt"]
           fileInfoList = QtCore.QDir(self.labelPath).entryInfoList(filters, QtCore.QDir.Files|QtCore.QDir.NoDotAndDotDot)
           if not fileInfoList:
-               raise Exception(f"{self.labelPath} is not contain label (*.txt Files)")
-          #check File is format true
+               raise Exception(f"{self.labelPath} is not contains label (*.txt Files)")
+          #check File is true format
           self.checkFile(fileInfoList[0])
      def checkFile(self,txtFileInfo:QtCore.QFileInfo):
           txtInfo=TxtFileInfo(txtFileInfo)
