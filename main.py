@@ -37,7 +37,7 @@ def Train():
 def Detect(source):
      if source is None: 
           raise argparse.ArgumentTypeError('usage: AIXCLI.exe detect -h \nmissed some arguments')
-     sys.stdout.write("Waiting for the detetion...\n")
+     sys.stdout.write("Waiting for the detection...\n")
      sys.stdout.flush()
      detect = DetectProcess(source)
      detect.execute()      
