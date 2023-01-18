@@ -9,11 +9,12 @@ sys.path.append(parentPath)
 import unittest
 
 from InitProcess.Src.Service.ImwiProjFileService import ImwiProjFileService
+from InitProcess.Src.Core import TrainType
 
 class TestImwiProjFileService(unittest.TestCase):
      def __init__(self, methodName: str = ...) -> None:
           super().__init__(methodName)
-          self.imwiProjFileService = ImwiProjFileService("d:/image","d:laebl","Seg")
+          self.imwiProjFileService = ImwiProjFileService("d:/image","d:laebl",TrainType.Segment)
      def testWriteRoot(self):
           self.imwiProjFileService.writeRoot()
      def testWriteDataset(self):

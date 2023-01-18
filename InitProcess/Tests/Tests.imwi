@@ -1,9 +1,0 @@
-dataset:
-  trainPath: hehe
-  validPah: hihi
-  outputPath: haha
-  modelFilePath: huhu
-root:
-  imagePath: d:/image
-  labelPath: d:laebl
-  trainType: Seg

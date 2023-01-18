@@ -15,7 +15,7 @@ class DatasetItem:
         self.labelPath=labelPath
     def getImagePath(self):
         return self.imagePath
-    def getlabelPath(self):
+    def getLabelPath(self):
         return self.labelPath
 class DatasetDirFormat(ABC):
      def __init__(self) -> None:
@@ -81,7 +81,7 @@ class AbstractLabelPathService(ABC):
 class InitFactory(ABC):
      def __init__(self,imagePath: str,labelPath :str) -> None:
           super().__init__()
-          self.imagePath-imagePath
+          self.imagePath=imagePath
           self.labelPath=labelPath
      @abstractclassmethod
      def createProjInputChecker(self)->ProjInputChecker:

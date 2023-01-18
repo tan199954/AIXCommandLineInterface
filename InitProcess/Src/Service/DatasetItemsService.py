@@ -26,12 +26,12 @@ class DatasetItemIO:
 class YoloLabelPathService(AbstractLabelPathService):
     YOLO_LABEL_FORMAT=".txt"
     def getLabelFilePath(self):
-        labelFilePath = self.labelPath + "/" + QtCore.QFileInfo(self.imageFilePath).baseName() + self.YOLO_LABEL_FORMAT
+        labelFilePath = self.labelPath + "\\" + QtCore.QFileInfo(self.imageFilePath).baseName() + self.YOLO_LABEL_FORMAT
         return labelFilePath
 class YoroLabelPathService(AbstractLabelPathService):
     YORO_LABEL_FORMAT=".mark"
     def getLabelFilePath(self):
-        labelFilePath = self.labelPath + "/" + QtCore.QFileInfo(self.imageFilePath).fileName() + self.YORO_LABEL_FORMAT
+        labelFilePath = self.labelPath + "\\" + QtCore.QFileInfo(self.imageFilePath).fileName() + self.YORO_LABEL_FORMAT
         return labelFilePath
 
 class DatasetItemsService(ABC):

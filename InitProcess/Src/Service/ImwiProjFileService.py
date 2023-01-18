@@ -19,7 +19,7 @@ class ImwiProjFileService:
      def getRootDict(self)->dict:
           return {"imagePath":self.imagePath,
                     "labelPath":self.labelPath,
-                    "trainType":self.trainType}
+                    "trainType":self.trainType.value}
      def getProjDict(self)->dict:
           if not self.isExist():
                return {}

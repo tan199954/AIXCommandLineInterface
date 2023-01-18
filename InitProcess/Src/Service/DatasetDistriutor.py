@@ -1,6 +1,7 @@
 from typing import List
 import os
 from InitProcess.Src.Core import DatasetItem
+import shutil
 
 class DatasetDistributor:
     MINIMUN_OF_DATASET=2
@@ -28,7 +29,7 @@ class DatasetDistributor:
     def distribute(self,validPercent:float):
         if validPercent > self.MAX_VALID_PERCENT:
             raise Exception("validPercent must be equal or smaller than 50%")
-        validTrainRatio=validPercent/(self.MAX_PERCENT-validPercent)
+        validTrainRatio=validPercent/(self.MAX_PERCENT)
         counter=validTrainRatio
         for datasetItem in self.datasetItems:
             counter=counter+validTrainRatio
@@ -38,16 +39,16 @@ class DatasetDistributor:
                 self.validDistribute(datasetItem)
                 counter=validTrainRatio
     def validDistribute(self,datasetItem:DatasetItem):
-        labelName = os.path.basename(datasetItem.getlabelPath())
+        labelName = os.path.basename(datasetItem.getLabelPath())
         imageName = os.path.basename(datasetItem.getImagePath())
         newLabelPath = os.path.join(self.labelsValidPath,labelName)
         newImagePath = os.path.join(self.imagesValidPath,imageName)
-        os.rename(datasetItem.getlabelPath(),newLabelPath)
-        os.rename(datasetItem.getImagePath(),newImagePath)
+        shutil.copy(datasetItem.getLabelPath(),newLabelPath)
+        shutil.copy(datasetItem.getImagePath(),newImagePath)
     def trainDistribute(self,datasetItem:DatasetItem):
-        labelName = os.path.basename(datasetItem.getlabelPath())
+        labelName = os.path.basename(datasetItem.getLabelPath())
         imageName = os.path.basename(datasetItem.getImagePath())
         newLabelPath = os.path.join(self.labelsTrainPath,labelName)
         newImagePath = os.path.join(self.imagesTrainPath,imageName)
-        os.rename(datasetItem.getlabelPath(),newLabelPath)
-        os.rename(datasetItem.getImagePath(),newImagePath)
+        shutil.copy(datasetItem.getLabelPath(),newLabelPath)
+        shutil.copy(datasetItem.getImagePath(),newImagePath)

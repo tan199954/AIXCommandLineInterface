@@ -5,7 +5,7 @@ class InitAbstractFactory:
      def __init__(self,imagePath: str,labelPath :str,trainType:TrainType) -> None:
           self.imagePath=imagePath
           self.labelPath=labelPath
-          self.type =trainType
+          self.trainType =trainType
      def getFactory(self)->InitFactory:
           if self.trainType == TrainType.BoundingBox:
                return BBoxInitFactory(self.imagePath,self.labelPath)
