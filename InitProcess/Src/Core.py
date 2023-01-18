@@ -70,6 +70,14 @@ class AbstractDatasetService(ABC):
      @abstractclassmethod
      def getDatasetInfo(self)->dict:
           pass
+class AbstractLabelPathService(ABC):
+     def __init__(self,imageFilePath:str,labelPath) -> None:
+          super().__init__()
+          self.imageFilePath=imageFilePath
+          self.labelPath=labelPath
+     @abstractclassmethod
+     def getLabelFilePath(self)->str:
+          pass
 class InitFactory(ABC):
      def __init__(self,imagePath: str,labelPath :str) -> None:
           super().__init__()
