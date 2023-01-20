@@ -2,7 +2,7 @@ from abc import abstractclassmethod
 from InitProcess.Src.Infrastructure.ImplDatasetDirFormat import YoloDatasetDirFormat,YoroDatasetDirFormat
 from InitProcess.Src.Core import DatasetDirFormat,AbstractDatasetService
 from InitProcess.Src.Service.DatasetItemsService import DatasetItemsService,YoloDatasetItemsService,YoroDatasetItemsService
-from InitProcess.Src.Service.DatasetDistriutor import DatasetDistributor
+from InitProcess.Src.Service.DatasetDistributor import DatasetDistributor
 
 
 class TrainValidDatasetService(AbstractDatasetService):
