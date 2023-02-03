@@ -6,7 +6,3 @@ class Device(IAIXProjCompositon):
         self.GPUmenmory=GPUmenmory
     def getAIXType(self)->int:
         return self.GPUmenmory
-    def getDict(self)->dict:
-        return {"Device":{
-            "GPUmenmory": self.GPUmenmory
-        }}

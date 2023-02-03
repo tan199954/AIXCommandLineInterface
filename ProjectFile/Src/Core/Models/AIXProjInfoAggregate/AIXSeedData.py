@@ -12,14 +12,7 @@ class AIXSeedData(IAIXProjCompositon):
         return self.imagePath
     def getLabelPath(self)->str:
         return self.labelPath
-    def getObjetNames(self)->List[str]:
+    def getObjectNames(self)->List[str]:
         return self.objectNames
     def getAIXType(self)->AIXType:
         return self.AIXType
-    def getDictInfo(self)->dict:
-        return {"AIXSeedData":{
-            "imagePath": self.imagePath,
-            "labelPath": self.labelPath,
-            "objectNames": self.objectNames,
-            "AIXType": self.AIXType.value
-        }}
