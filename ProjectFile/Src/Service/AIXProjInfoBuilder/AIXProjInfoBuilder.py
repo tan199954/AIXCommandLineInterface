@@ -14,10 +14,10 @@ class AIXProjInfoV1Builder(IAIXProjInfoV1Buider):
         super().__init__()
     def setAIXSeedData(self,aIXSeedData:AIXSeedData.AIXSeedData)->"AIXProjInfoV1Builder":
         #checkImagePath
-        imagePath=aIXSeedData.getLabelPath()
+        imagePath=aIXSeedData.getImagePath()
         DatasetPathChecker.checkImagePath(imagePath)
         #checkLabelPath
-        labelPath=aIXSeedData.getImagePath()
+        labelPath=aIXSeedData.getLabelPath()
         AIXType=aIXSeedData.getAIXType()
         DatasetPathChecker.checkLabelPath(labelPath,AIXType)
         #checkObjectNames

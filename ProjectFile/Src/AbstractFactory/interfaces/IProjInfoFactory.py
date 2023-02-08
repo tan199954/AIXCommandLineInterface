@@ -1,10 +1,12 @@
-from ProjectFile.Src.Core.Interfaces.IAIXProjInfo import IAIXProjInfo
 from abc import ABC,abstractclassmethod
-
-class IProjInfoAbstractFactory(ABC):
+from ProjectFile.Src.Service.Interfaces.IAIXProjInfoBuilder import IAIXProjInfoBuilder
+from ProjectFile.Src.Service.Interfaces.IAIXProjInfoConverter import IAIXProjInfoConverter
+class IProjInfoFactory(ABC):
+    '''When you update version of AIXProjInfo,
+    you have to overwrite createProjInfoBuilder and createProjInfoConverter method
+    by return IAIXProjInfoBuilder, IAIXProjInfoConverter.'''
     @abstractclassmethod
-    def getAIXProjInfo(self)->IAIXProjInfo:
+    def createProjInfoBuilder(self)->IAIXProjInfoBuilder:
         pass
-    @abstractclassmethod
-    def getAIXProjInfoFrDictData(self,data:dict)->IAIXProjInfo:
+    def createProjInfoConverter(self)->IAIXProjInfoConverter:
         pass

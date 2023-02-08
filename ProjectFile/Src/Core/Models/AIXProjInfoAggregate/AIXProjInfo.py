@@ -3,10 +3,11 @@ from ProjectFile.Src.Core.Interfaces.IAIXProjCompositon import IAIXProjComposito
 from ProjectFile.Src.Core.Models.AIXProjInfoAggregate import AIXSeedData,DatasetInfo,Device,OutputInfo
 
 class AIXProjInfoV1(IAIXProjInfo):
-    AIX_SEED_DATA_KEY="AIXSeedData"
-    DATASET_INFO_KEY = "DatasetInfo"
-    DEVICE_KEY = "Device"
-    OUTPUT_INFO_KEY = "Output"
+    '''When you update AIXProjInfo version (Core),
+    you have to update AIXProjInfoService in Application Directory
+    ProjInfo"Version"Factory in AbstractFactory Directory,
+    AIXProjInfo"Version"Builder and AIXProjInfo"Version"CVT in Service Directory
+    "Version" is V1, V2,...'''
     def __init__(self,AIXSeedData:AIXSeedData.AIXSeedData=None,datasetInfo:DatasetInfo.DatasetInfo=None,
                 device:Device.Device=None,outputInfo:OutputInfo.OutputInfo=None) -> None:
         self.AIXSeedData=AIXSeedData
@@ -15,27 +16,12 @@ class AIXProjInfoV1(IAIXProjInfo):
         self.outputInfo=outputInfo
         super().__init__()
     def update(self,projCompositon:IAIXProjCompositon):
-        projCompositonDict=projCompositon.getDictInfo()
-        projCompositonKey=projCompositonDict.keys()[0]
-        self.updateProperty(projCompositonKey,projCompositon)
-    def updateProperty(self,key:str,projCompositon:IAIXProjCompositon):
-        if key == self.AIX_SEED_DATA_KEY:
+        if isinstance(projCompositon,AIXSeedData.AIXSeedData):
             self.AIXSeedData=projCompositon
-        elif key == self.DATASET_INFO_KEY:
+        if isinstance(projCompositon,DatasetInfo.DatasetInfo):
             self.datasetInfo=projCompositon
-        elif key == self.DEVICE_KEY:
+        if isinstance(projCompositon,Device.Device):
             self.device=projCompositon
-        else:
+        if isinstance(projCompositon,OutputInfo.OutputInfo):
             self.outputInfo=projCompositon
-    def getDictData(self)->dict:
-        dictData = {}
-        AIXProjCompositons=[self.AIXSeedData,
-                            self.datasetInfo,
-                            self.device,
-                            self.outputInfo]
-        for AIXProjCompositon in AIXProjCompositons:
-            if AIXProjCompositon is not None:
-                compositonData = AIXProjCompositon.getDictInfo()
-                dictData[compositonData.keys()[0]]=compositonData.values()
-        return dictData
     

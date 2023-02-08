@@ -8,6 +8,12 @@ class DatasetPathChecker:
     IMAGE_FILTERS = [ "*.png" , "*.jpg" , "*.bmp"]
     YOLO_LABEL_FILTER = ["*.txt"]
     YORO_LABEL_FILTER = ["*.mark"]
+    @overload
+    @staticmethod
+    def checkLabelPath(labelPath:str,AIXtype:AIXType):...
+    @overload
+    @staticmethod
+    def checkLabelPath(labelPath:str):...
     @staticmethod
     def checkLabelPath(para1=None,para2=None):
         if isinstance(para2,AIXType):
@@ -17,13 +23,8 @@ class DatasetPathChecker:
         else:
             filters=DatasetPathChecker.YOLO_LABEL_FILTER+DatasetPathChecker.YORO_LABEL_FILTER
             DatasetPathChecker.checkLabelPathbyFilter(para1,filters)
-    @overload
-    @staticmethod
-    def checkLabelPath(labelPath:str,AIXtype:AIXType):...
-    @overload
-    @staticmethod
-    def checkLabelPath(labelPath:str):...
-    def checkLabelPathbyFilter(self,labelPath:str,filter:List[str]):
+
+    def checkLabelPathbyFilter(labelPath:str,filter:List[str]):
         fileInfoList = QtCore.QDir(labelPath).entryInfoList(filter, QtCore.QDir.Files|QtCore.QDir.NoDotAndDotDot)
         if not fileInfoList:
             raise Exception(f"{labelPath} is not contains label files ({', '.join(filter)} Files)")

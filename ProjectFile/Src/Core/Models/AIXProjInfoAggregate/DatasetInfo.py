@@ -1,8 +1,8 @@
 from ProjectFile.Src.Core.Interfaces.IAIXProjCompositon import IAIXProjCompositon
 
 class DatasetInfo(IAIXProjCompositon):
-    def __init__(self,datasetPath,trainImagePath,validImagePath,
-        trainLabelPath,validLabelPath) -> None:
+    def __init__(self,datasetPath:str=None,trainImagePath:str=None,validImagePath:str=None,
+        trainLabelPath:str=None,validLabelPath:str=None) -> None:
         super().__init__()
         self.datasetPath=datasetPath
         self.trainImagePath=trainImagePath
