@@ -1,4 +1,3 @@
-import os
 from typing import overload, List
 from PySide6 import QtCore
 from ProjectFile.Src.Core.Models.AIXProjInfoAggregate.AIXEnum import AIXType
