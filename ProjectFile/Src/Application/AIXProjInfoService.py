@@ -23,7 +23,7 @@ class AIXProjInfoService(IAIXProjInfoService):
     def setAIXProjInfo(self,imagePath:str,laeblPath:str,objectNames:List[str]):
         aIXSeedData=AIXSeedData(imagePath,laeblPath,objectNames)
         deviceService=DeviceService()
-        device=Device(deviceService.getGPUmenmory())
+        device=Device(deviceService.getTotalFreeGPUmenmory())
         #build process
         aIXProjInfoV1Builder=self.getProjInfoFactory().createProjInfoBuilder()
         aIXProjInfoV1Builder.setAIXSeedData(aIXSeedData)
