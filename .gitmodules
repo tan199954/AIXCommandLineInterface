@@ -1,6 +1,3 @@
-[submodule "DetectProcess"]
-	path = DetectProcess
-	url = https://github.com/tan199954/DetectProcess.git
 [submodule "TrainProcess"]
 	path = TrainProcess
 	url = https://github.com/tan199954/TrainProcess.git
