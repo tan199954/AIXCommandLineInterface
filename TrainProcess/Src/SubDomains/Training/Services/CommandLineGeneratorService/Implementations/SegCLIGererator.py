@@ -1,4 +1,5 @@
 from .AbstractYOLOCLIGererator import AbstractYOLOCLIGererator 
+from .....Common.OutputManager.SegOutputManager import AbstractYOLOOutputManager,SegOutputManager
 
 
 class SegCLIGererator(AbstractYOLOCLIGererator):
@@ -8,3 +9,6 @@ class SegCLIGererator(AbstractYOLOCLIGererator):
     @property
     def TRAIN_COMMAND(self)->str:
         return "yolo segment train"
+    @property
+    def abstractYOLOOutputManager(self)->AbstractYOLOOutputManager:
+        return SegOutputManager()

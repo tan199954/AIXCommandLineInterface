@@ -1,5 +1,5 @@
 from .AbstractYOLOCLIGererator import AbstractYOLOCLIGererator 
-
+from .....Common.OutputManager.BoxOutputManager import AbstractYOLOOutputManager,BoxOutputManager
 
 class BoxCLIGererator(AbstractYOLOCLIGererator):
     @property
@@ -8,3 +8,6 @@ class BoxCLIGererator(AbstractYOLOCLIGererator):
     @property
     def TRAIN_COMMAND(self)->str:
         return "yolo detect train"
+    @property
+    def abstractYOLOOutputManager(self)->AbstractYOLOOutputManager:
+        return BoxOutputManager()

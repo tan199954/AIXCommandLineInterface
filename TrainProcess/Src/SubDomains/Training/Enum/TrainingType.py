@@ -1,6 +1,6 @@
 from enum import Enum
 
-class TrainingType:
+class TrainingType(Enum):
     Seg = "Seg"
     Box = "Box"
     BBox = "BBox"

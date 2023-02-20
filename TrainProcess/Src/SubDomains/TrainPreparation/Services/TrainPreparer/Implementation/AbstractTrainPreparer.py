@@ -1,7 +1,7 @@
 import os
 from typing import List
 from ..Interfaces.ITrainPreparer import ITrainPreparer
-from .....Common.OutputDirManager.OutputDirManager import OutputDirManager
+from .....Common.OutputDirManager.AbstractOutputManager import OutputDirManager
 
 class AbstractTrainPreparer(ITrainPreparer):
     def __init__(self,gpuMenmory:int=None,trainPath:str=None,validPath:str=None,nameObjects:List[str]=None) -> None:

@@ -1,7 +1,7 @@
 from abc import abstractproperty
 from ..Interfaces.ICommandLineGeneratorService import ICommandLineGeneratorService
 from .....Common.PathConverter.PathConverter import PathConverter
-from .....Common.OutputDirManager.OutputDirManager import OutputDirManager
+from .....Common.OutputManager.AbstractOutputManager import AbstractYOLOOutputManager
 
 
 class AbstractYOLOCLIGererator(ICommandLineGeneratorService):
@@ -17,15 +17,18 @@ class AbstractYOLOCLIGererator(ICommandLineGeneratorService):
     @abstractproperty
     def TRAIN_COMMAND(self)->str:
         pass
+    @abstractproperty
+    def abstractYOLOOutputManager(self)->AbstractYOLOOutputManager:
+        pass
     def __init__(self,learningRate:float=0.01,imageSize:int=320,batchSize:int=32) -> None:
         super().__init__()
         self.learningRate=learningRate
         self.imageSize=imageSize
         self.batchSize=batchSize
     def __getYOLOCommandLine(self)->str:
-        if OutputDirManager.isLastModelExist():
+        if self.abstractYOLOOutputManager.isLastModelExist():
             modelPath=(self.KEEP_FULL_PATH_KEY + 
-                       PathConverter.Windows2WSL(OutputDirManager.getLastModelPath())
+                       PathConverter.Windows2WSL(self.abstractYOLOOutputManager.getLastModelPath())
                     + self.KEEP_FULL_PATH_KEY)
         else:
             modelPath=self.MODEL_DEFAULT
@@ -36,7 +39,7 @@ class AbstractYOLOCLIGererator(ICommandLineGeneratorService):
             + "batch=" + str(self.batchSize) + self.PARAMETER_SPERATOR
             + "lr0=" + str(self.learningRate) + self.COMMAND_SPERATOR)
     def __getCDOutputCommandLine(self)->str:
-        outputDirPath=OutputDirManager.getOutputDirPath()
+        outputDirPath=AbstractYOLOOutputManager.getOutputDirPath()
         wslOutputPath= (self.KEEP_FULL_PATH_KEY 
                         + PathConverter.Windows2WSL(outputDirPath) 
                         + self.KEEP_FULL_PATH_KEY)
@@ -48,4 +51,4 @@ class AbstractYOLOCLIGererator(ICommandLineGeneratorService):
         return (self.WSL_LOGIN_COMMAND + self.PARAMETER_SPERATOR 
                 + self.ACCEPT_COMMAND_KEY + self.PARAMETER_SPERATOR
                 + self.__getCDOutputCommandLine() + self.PARAMETER_SPERATOR 
-                + self.__getYOLOCommandLine() + self.COMMAND_SPERATOR)
+                + self.__getYOLOCommandLine())

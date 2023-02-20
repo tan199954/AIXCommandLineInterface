@@ -1,5 +1,5 @@
 from PySide6 import QtCore
-from ....Models.ModelInfo.Implementations.ModelInfo import ModelInfo
+from ...Models.ModelInfo.Implementations.ModelInfo import ModelInfo
 
 class BestModelFinder(QtCore.QObject):
     bestModelFound=QtCore.Signal(ModelInfo)
