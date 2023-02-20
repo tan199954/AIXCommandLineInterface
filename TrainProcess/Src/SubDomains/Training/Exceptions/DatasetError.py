@@ -1,0 +1,2 @@
+class DatasetQualityError(Exception):
+    pass

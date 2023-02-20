@@ -1,0 +1,68 @@
+mode: yoro
+
+name: coating_yolov4_tiny
+device: auto
+construct:
+  width: 416
+  height: 416
+  anchor:
+    - [[78.89, 78.94], [91.68, 64.73]]
+    - [[55.22, 55.26], [64.18, 45.31]]
+  deg_min: -180
+  deg_max: 180
+  deg_part_size: 10
+  backbone:
+    name: 'yoro.backbones.darknet.YOLOv4_Tiny'
+    args: {width: 416, height: 416, channels: 3}
+
+train_param:
+  batch: 64
+  subdivision: 2
+
+  max_iter: 0
+  esti_iter: 100
+  bak_iter: 1000
+
+  train_units: 0
+  moving_factor: 0.01
+  evaluator:
+    conf_threshold: 0.5
+    nms_threshold: 0.6
+    sim_threshold: [0.5, 0.95, 0.05]
+
+  num_workers: 8
+  pin_memory: true
+  optimizer:
+    name: 'torch.optim.SGD'
+    args: {'lr': 0.01, 'weight_decay': 0.0005}
+
+  grad_clip_norm: 100
+  lr_scheduler:
+    name: 'yoro.optim.lr_scheduler.steps'
+    args:
+      steps: [2500, 10000]
+      scales: [0.1, 0.1]
+      burnin_iters: 1000
+
+  anchor_thresh: 0.5
+  anchor_max_count: 3
+  loss_normalizer:
+    obj: 1.0
+    no_obj: 0.3
+    cls: 0.7
+    box: 4.0
+
+dataset:
+  names_file: /mnt/e/Customs/YoroV4/newManjaro/coating/coating.names
+  train_dir: /mnt/e/Customs/YoroV4/newManjaro/coating/train
+  valid_dir: /mnt/e/Customs/YoroV4/newManjaro/coating/valid
+
+transform:
+  brightness: 0.3
+  contrast: 0.3
+  saturation: 0.3
+  hue: 0.1
+  degrees: 30
+  translate: [0.3, 0.3]
+  scale: [0.5, 1.5]
+  apply_on_valid: false
