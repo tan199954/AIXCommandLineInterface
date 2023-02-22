@@ -1,0 +1,7 @@
+train: /mnt/d/Tanworking/python/Yolov8/dataset/images/train  # train images (relative to 'path') 128 images
+val: /mnt/d/Tanworking/python/Yolov8/dataset/images/val  # val images (relative to 'path') 128 images
+test:  # test images (optional)
+
+# Classes
+names:
+  0: mushroom

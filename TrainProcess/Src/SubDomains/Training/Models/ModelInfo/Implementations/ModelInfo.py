@@ -1,8 +1,8 @@
 from ..Interfaces.IModelInfo import IModelInfo
 
 class ModelInfo(IModelInfo):
-    def __init__(self,loss:float,IOU:float,MAP:float) -> None:
+    def __init__(self,loss:float,iOU:float,mAP:float) -> None:
         self.loss=loss
-        self.IOU=IOU
-        self.MAP=MAP
+        self.iOU=iOU
+        self.mAP=mAP
         super().__init__()

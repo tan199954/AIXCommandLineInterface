@@ -3,7 +3,8 @@ from ...Models.ModelInfo.Implementations.ModelInfo import ModelInfo
 
 class BestModelFinder(QtCore.QObject):
     bestModelFound=QtCore.Signal(ModelInfo)
-    def __init__(self) -> None:
+    def __init__(self, parent: QtCore.QObject = None) -> None:
+        super().__init__(parent)
         self.bestModelInfo=None
     def addNewModel(self,newModelInfo:ModelInfo):
         if not self.__isGoodIOU(newModelInfo.IOU):
