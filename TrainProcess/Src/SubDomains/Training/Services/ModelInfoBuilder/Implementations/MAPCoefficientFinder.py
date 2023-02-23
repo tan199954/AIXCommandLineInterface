@@ -1,9 +1,12 @@
 from typing import List
+from abc import ABC,abstractproperty
 from .....Common.DataTypeChecker.DataTypeChecker import DataTypeChecker
 
-class SegMAPCoefficientFinder:
+class AbstractYOLOMAPCoefficientFinder(ABC):
      TARGET_KEY="all"
-     MAP_INDEX_OFFSET=10
+     @abstractproperty
+     def MAP_INDEX_OFFSET(self)->int:
+          pass
      def getMAPFrStr(self,stringData:str)->float:
           wordList=[word for word in stringData.split() if word]
           if not self.__isConstaninRequireKeys(wordList):
@@ -19,3 +22,13 @@ class SegMAPCoefficientFinder:
           return self.TARGET_KEY in wordList
      def __isInOfRange(self,wordList:List[str],index)->bool:
           return 0 <= index < len(wordList)
+     
+class SegMAPCoefficientFinder(AbstractYOLOMAPCoefficientFinder):
+     @property
+     def MAP_INDEX_OFFSET(self)->int:
+          return 10
+
+class BoxMAPCoefficientFinder(AbstractYOLOMAPCoefficientFinder):
+     @property
+     def MAP_INDEX_OFFSET(self)->int:
+          return 6

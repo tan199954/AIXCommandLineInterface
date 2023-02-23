@@ -4,7 +4,6 @@ class IModelInfoBuilder(ABC):
     @abstractclassmethod
     def build(self)->ModelInfo:
         pass
-    @staticmethod
     @abstractclassmethod
     def buildFromStr(stringData:str)->ModelInfo:
         pass
