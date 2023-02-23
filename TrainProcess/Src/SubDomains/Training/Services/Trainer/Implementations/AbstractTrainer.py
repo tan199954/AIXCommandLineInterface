@@ -1,4 +1,5 @@
 import signal
+from PySide6 import QtCore
 from abc import abstractclassmethod
 from .....Common.ApplicationThread.ApplicationThread import QCoreApplicationThread
 from ..Interfaces.ITrainer import ITrainer
@@ -6,19 +7,25 @@ from ..Interfaces.ITrainer import ITrainer
 
 class AbstractQCoreAppTrainer(ITrainer):
      def __init__(self) -> None:
-        signal.signal(signal.SIGINT,self.__cleanUp)
+        signal.signal(signal.SIGINT,self.__cleanUpOnSIGINT)
+        self.appThr=QCoreApplicationThread(self.defineMainFuncitionOfQCoreAppThread)
      @abstractclassmethod
-     def definePySide6Classes(self):
+     def defineMainFuncitionOfQCoreAppThread(self):
           pass
      def execute(self):
-          self.appThr=QCoreApplicationThread(self.definePySide6Classes)
           self.appThr.start()
           self.__keepPointer()
+     def quitQCoreAppThread(self):
+          self.appThr.app.quit()
+          if self.appThr.isRunning():
+               self.appThr.quit()
+               if self.appThr is not QtCore.QThread.currentThread():
+                    self.appThr.wait()
      def __keepPointer(self):
           while self.appThr.isRunning():
                pass
           signal.signal(signal.SIGINT,signal.default_int_handler)
-     def __cleanUp(self,signalNum,frame):
+     def __cleanUpOnSIGINT(self,signalNum,frame):
           signal.signal(signal.SIGINT,signal.default_int_handler)
           if self.appThr.isRunning():
                self.appThr.quit()

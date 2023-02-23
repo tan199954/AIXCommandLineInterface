@@ -1,4 +1,3 @@
-from PySide6.QtCore import Qt,QCoreApplication
 from ....Exceptions.DatasetError import DatasetQualityError
 from ...CommandPromptService.CommandPromptService import CommandPromptService
 from ...ModelEvaluator.ModelEvaluator import ModelEvaluator
@@ -7,7 +6,7 @@ from ...CommandLineGeneratorService.Implementations.SegCLIGererator import SegCL
 from .AbstractTrainer import AbstractQCoreAppTrainer
 
 class SegTrainer(AbstractQCoreAppTrainer):
-    def definePySide6Classes(self):
+    def defineMainFuncitionOfQCoreAppThread(self):
         self.segCLIGererator=SegCLIGererator()
         self.CMDService=CommandPromptService()
         self.modelEvaluator=ModelEvaluator()
@@ -15,9 +14,10 @@ class SegTrainer(AbstractQCoreAppTrainer):
         self.CMDService.errorFinished.connect(self.__onErrorFinished)
         self.CMDService.outputReceived.connect(self.__onResultReceived)
         self.CMDService.errorReceived.connect(self.__onResultReceived)
-        self.modelEvaluator.bestModelFound.connect(lambda: self.__stopTrain())
+        self.modelEvaluator.bestModelFound.connect(self.__onBestModelFound)
         self.modelEvaluator.learningRateMustDecrease.connect(self.__decreaseLearningRate)
         self.modelEvaluator.datasetLowQuality.connect(self.__onDatasetLowQuality)
+        self.appThr.finished.connect(self.__cleanUpPySide6Classes)
         self.__startTrain()
     def __startTrain(self):
         commandLine=self.segCLIGererator.getCommadLine()
@@ -25,26 +25,33 @@ class SegTrainer(AbstractQCoreAppTrainer):
         self.CMDService.start()
     def __stopTrain(self):
         self.CMDService.stop()
-        self.app.quit()
     def __decreaseLearningRate(self):
-        self.CMDService.stop()
+        self.__stopTrain()
         self.segCLIGererator.decreaseLearningRate()
         self.__startTrain()
     def __onDatasetLowQuality(self):
         self.__stopTrain()
+        self.quitQCoreAppThread()
         raise DatasetQualityError('The dataset is low quality, please check the dataset')
+    def __onBestModelFound(self):
+        self.__stopTrain()
+        self.quitQCoreAppThread()
+    def __onErrorFinished(self,error:str):
+        self.__stopTrain()
+        self.quitQCoreAppThread()
+        raise RuntimeError(error)
     def __onResultReceived(self,result:str):
-        print("__onResultReceived")
+        print(f"result: {result}")
         model=SegModelInfoBuilder().buildFromStr(result)
         if isinstance(model,ModelInfo):
             self.modelEvaluator.evaluate(model)
             print("modelEvaluator.evaluate")
-    def __onErrorFinished(self,error:str):
-        self.__stopTrain()
-        raise RuntimeError(error)
     def __onFinished(self):
         """
         If the 'bestModelFound' signal has not been emitted after the cmdService finished,
         continue training.
         """
+        self.__stopTrain()
         self.__startTrain()
+    def __cleanUpPySide6Classes(self):
+        self.CMDService.stop()

@@ -22,15 +22,18 @@ class CommandPromptService(QtCore.QObject):
         commandLine = "cmd /c "+self.commandLine
         self.process.startCommand(commandLine)    
     def stop(self):
-        self.process.errorOccurred.disconnect(self.__onErrorOccurred)
-        self.process.finished.disconnect(self.__onFinished)
+        try:
+            self.process.errorOccurred.disconnect(self.__onErrorOccurred)
+            self.process.finished.disconnect(self.__onFinished)
+        except: 
+            pass
         if (self.process.state() == QtCore.QProcess.ProcessState.Running or self.process.state() == QtCore.QProcess.ProcessState.Starting):            
             self.process.kill()
             self.process.waitForFinished(-1)
             self.process.close()
     def __onErrorOccurred(self,error:QtCore.QProcess.ProcessError):
         data = self.process.readAllStandardError()
-        if self.process.waitForFinished():
+        if self.process.waitForFinished(50):
             self.errorFinished.emit(data.data().decode())
         else:
             self.errorReceived.emit(data.data().decode())
@@ -45,7 +48,7 @@ class CommandPromptService(QtCore.QObject):
         self.outputReceived.emit(data.data().decode()) 
     def __onReadError(self):
         data = self.process.readAllStandardError()
-        if self.process.waitForFinished(300):
+        if self.process.waitForFinished(50):
             self.errorFinished.emit(data.data().decode())
         else:
             self.errorReceived.emit(data.data().decode())
