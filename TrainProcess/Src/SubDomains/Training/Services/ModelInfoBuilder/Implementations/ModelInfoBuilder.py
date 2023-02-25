@@ -5,6 +5,8 @@ from .MAPCoefficientFinder import SegMAPCoefficientFinder,AbstractYOLOMAPCoeffic
 
 class AbstractYOLOModelInfoBuilder(IModelInfoBuilder):
      IOU_DEFAULT=0.7
+     def __init__(self) -> None:
+          super().__init__()
      @abstractproperty
      def lossCoefficientFinder(self)->AbstractYOLOLossCoefficientFinder:
           pass

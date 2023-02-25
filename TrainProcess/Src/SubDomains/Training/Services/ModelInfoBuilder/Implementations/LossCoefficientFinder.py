@@ -24,9 +24,11 @@ class AbstractYOLOLossCoefficientFinder(ABC):
           for badStr in self.BAD_STRINGS:
                newStringData=newStringData.replace(badStr,"")
           return newStringData
-     def __isConstaninRequireKeys(self,wordList:List[str])->str:
-          targetValue=wordList[self.TARGET_INDEX]
-          return self.TARGET_KEY in targetValue
+     def __isConstaninRequireKeys(self,wordList:List[str])->bool:
+          if self.__isInOfRange(wordList,self.TARGET_INDEX):
+               targetValue=wordList[self.TARGET_INDEX]
+               return self.TARGET_KEY in targetValue
+          return False
      def __getLossStringData(self,wordList:List[str]):
           if self.__isInOfRange(wordList,self.LOSS_INDEX):
                return wordList[self.LOSS_INDEX]

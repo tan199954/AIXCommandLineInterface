@@ -1,6 +1,6 @@
 mode: yoro
 
-name: coating_yolov4_tiny
+name: models
 device: auto
 construct:
   width: 416

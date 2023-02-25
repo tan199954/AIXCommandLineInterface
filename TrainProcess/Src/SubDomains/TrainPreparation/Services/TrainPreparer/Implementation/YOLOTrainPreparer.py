@@ -17,7 +17,7 @@ class YOLOTrainPreparer(AbstractTrainPreparer):
     def _getYamlData(self):
         return {
             "train":PathConverter.Windows2WSL(self.trainPath),  
-            "val": PathConverter.Windows2WSL(self.trainPath),  
+            "val": PathConverter.Windows2WSL(self.validPath),  
             "test": None,
             "names":self._getDictionaryNames()
         }

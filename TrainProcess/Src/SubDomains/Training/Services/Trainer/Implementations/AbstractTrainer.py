@@ -1,14 +1,12 @@
 import signal
-from PySide6 import QtCore
 from abc import abstractclassmethod, abstractproperty
 from .....Common.ApplicationThread.ApplicationThread import QCoreApplicationThread
-from ..Interfaces.ITrainer import ITrainer
-
+from .....Common.CommandPromptService.CommandPromptService import CommandPromptService
 from ....Exceptions.DatasetError import DatasetQualityError
-from ...CommandPromptService.CommandPromptService import CommandPromptService
 from ...ModelEvaluator.ModelEvaluator import ModelEvaluator,ModelInfo
 from ...ModelInfoBuilder.Interfaces.IModelInfoBuilder import IModelInfoBuilder
 from ...CommandLineGeneratorService.Implementations.AbstractYOLOCLIGererator import AbstractYOLOCLIGererator
+from ..Interfaces.ITrainer import ITrainer
 from .AbstractTrainer import AbstractQCoreAppTrainer
 
 
@@ -24,19 +22,15 @@ class AbstractQCoreAppTrainer(ITrainer):
           self.__keepPointer()
      def quitQCoreAppThread(self):
           self.appThr.app.quit()
-          if self.appThr.isRunning():
-               self.appThr.quit()
-               if self.appThr is not QtCore.QThread.currentThread():
-                    self.appThr.wait()
      def __keepPointer(self):
           while self.appThr.isRunning():
                pass
           signal.signal(signal.SIGINT,signal.default_int_handler)
      def __cleanUpOnSIGINT(self,signalNum,frame):
+          self.quitQCoreAppThread()
+          while self.appThr.isRunning():
+               pass
           signal.signal(signal.SIGINT,signal.default_int_handler)
-          if self.appThr.isRunning():
-               self.appThr.quit()
-               self.appThr.wait()
           signal.default_int_handler(signalNum,frame)
 
 class AbstractYOLOTrainer(AbstractQCoreAppTrainer):
@@ -49,20 +43,27 @@ class AbstractYOLOTrainer(AbstractQCoreAppTrainer):
      def defineMainFuncitionOfQCoreAppThread(self):
           self.CMDService=CommandPromptService()
           self.modelEvaluator=ModelEvaluator()
+          self.modelEvaluator.bestModelFound.connect(self.__onBestModelFound)
+          self.modelEvaluator.learningRateMustDecrease.connect(self.__decreaseLearningRate)
+          self.modelEvaluator.datasetLowQuality.connect(self.__onDatasetLowQuality)
+          self.appThr.app.aboutToQuit.connect(self.__cleanUpPySide6Classes)
+          self.__startTrain()
+     def __startTrain(self):
           self.CMDService.finished.connect(self.__onFinished)
           self.CMDService.errorFinished.connect(self.__onErrorFinished)
           self.CMDService.outputReceived.connect(self.__onResultReceived)
           self.CMDService.errorReceived.connect(self.__onResultReceived)
-          self.modelEvaluator.bestModelFound.connect(self.__onBestModelFound)
-          self.modelEvaluator.learningRateMustDecrease.connect(self.__decreaseLearningRate)
-          self.modelEvaluator.datasetLowQuality.connect(self.__onDatasetLowQuality)
-          self.appThr.finished.connect(self.__cleanUpPySide6Classes)
-          self.__startTrain()
-     def __startTrain(self):
           commandLine=self.YOLOCLIGenerator.getCommadLine()
           self.CMDService.commandLine=commandLine
           self.CMDService.start()
      def __stopTrain(self):
+          try:
+               self.CMDService.finished.disconnect(self.__onFinished)
+               self.CMDService.errorFinished.disconnect(self.__onErrorFinished)
+               self.CMDService.outputReceived.disconnect(self.__onResultReceived)
+               self.CMDService.errorReceived.disconnect(self.__onResultReceived)
+          except:
+               pass
           self.CMDService.stop()
      def __decreaseLearningRate(self):
           self.__stopTrain()
@@ -80,11 +81,10 @@ class AbstractYOLOTrainer(AbstractQCoreAppTrainer):
           self.quitQCoreAppThread()
           raise RuntimeError(error)
      def __onResultReceived(self,result:str):
-          print(f"result: {result}")
           model=self.modelInfoBuilder.buildFromStr(result)
           if isinstance(model,ModelInfo):
+               print(f"iou: {model.iOU}, loss: {model.loss}, map: {model.mAP}")
                self.modelEvaluator.evaluate(model)
-               print("modelEvaluator.evaluate")
      def __onFinished(self):
           """
           If the 'bestModelFound' signal has not been emitted after the cmdService finished,
@@ -93,4 +93,4 @@ class AbstractYOLOTrainer(AbstractQCoreAppTrainer):
           self.__stopTrain()
           self.__startTrain()
      def __cleanUpPySide6Classes(self):
-          self.CMDService.stop()
+          self.__stopTrain()

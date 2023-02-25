@@ -1,7 +1,6 @@
 import os
 from typing import List
 from abc import abstractclassmethod,abstractproperty, ABC
-from PySide6 import QtCore
 
 class AbstractOutputManager(ABC):
     OUTPUT_DIR_NAME="Output"
@@ -19,35 +18,42 @@ class AbstractOutputManager(ABC):
 class AbstractYOLOOutputManager(AbstractOutputManager):
     MODEL_DIR_NAME="weights"
     LAST_MODEL_FILE_NAME="last.pt"
+    BEST_MODEL_FILE_NAME="best.pt"
     @abstractproperty
     def TRAIN_DIR_NAME(self)->str:
         pass
-    def getLastModelPath(self)->str:
-        entries = self.__getScandirInterator()
-        sortedEntries = sorted(entries, key=lambda entry: entry.stat().st_mtime, reverse=True)
-        subDirsSorted = [sub.path for sub in sortedEntries if sub.is_dir()]
-        for DirPath in subDirsSorted:
-            modelDirPath = os.path.join(DirPath,self.MODEL_DIR_NAME)
-            lastModelFilePath=os.path.join(modelDirPath,self.LAST_MODEL_FILE_NAME)
+    def __getModelPath(self,modelFilleName:str)->str:
+        subTrainDirPaths=self.__getSubTrainDirPaths()
+        for dirPath in subTrainDirPaths:
+            modelDirPath = os.path.join(dirPath,self.MODEL_DIR_NAME)
+            lastModelFilePath=os.path.join(modelDirPath,modelFilleName)
             if os.path.exists(lastModelFilePath):
                 return lastModelFilePath
-        raise FileNotFoundError("could not find last.pt File, "
-                                "check last model exist with method 'isLastModelExist()'")
-    def isLastModelExist(self)->bool:
-        subTrainDirPath=self.__getSubTrainDirPaths()
-        for DirPath in subTrainDirPath:
-            modelDirPath = os.path.join(DirPath,self.MODEL_DIR_NAME)
-            lastModelFilePath=os.path.join(modelDirPath,self.LAST_MODEL_FILE_NAME)
+        raise FileNotFoundError(f"could not find {modelFilleName}, "
+                                "check model exist with method 'isModelExist()'")
+    def getLastModelPath(self)->str:
+        return self.__getModelPath(self.LAST_MODEL_FILE_NAME)
+    def getBestModelPath(self)->str:
+        return self.__getModelPath(self.BEST_MODEL_FILE_NAME)
+    def __isModelExist(self,modelFilleName:str)->bool:
+        subTrainDirPaths=self.__getSubTrainDirPaths()
+        for dirPath in subTrainDirPaths:
+            modelDirPath = os.path.join(dirPath,self.MODEL_DIR_NAME)
+            lastModelFilePath=os.path.join(modelDirPath,modelFilleName)
             if os.path.exists(lastModelFilePath):
                 return True
         return False
+    def isLastModelExist(self)->bool:
+        return self.__isModelExist(self.LAST_MODEL_FILE_NAME)
+    def isBestModelExist(self)->bool:
+        return self.__isModelExist(self.BEST_MODEL_FILE_NAME)
     def __getScandirInterator(self):
         outputPath=AbstractOutputManager.getOutputDirPath()
-        trainDirName=self.TRAIN_DIR_NAME
-        trainDirPath=os.path.join(outputPath,trainDirName)
+        trainDirPath=os.path.join(outputPath,self.TRAIN_DIR_NAME)
         if os.path.exists(trainDirPath):
             return os.scandir(trainDirPath)
         return list()
     def __getSubTrainDirPaths(self)->List[str]:
         entries = self.__getScandirInterator()
-        return [sub.path for sub in entries if sub.is_dir()]
+        sortedEntries = sorted(entries, key=lambda entry: entry.stat().st_mtime, reverse=True)
+        return [sub.path for sub in sortedEntries if sub.is_dir()]

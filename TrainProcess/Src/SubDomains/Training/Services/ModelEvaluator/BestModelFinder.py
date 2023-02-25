@@ -7,25 +7,25 @@ class BestModelFinder(QtCore.QObject):
         super().__init__(parent)
         self.bestModelInfo=None
     def addNewModel(self,newModelInfo:ModelInfo):
-        if not self.__isGoodIOU(newModelInfo.IOU):
+        if not self.__isGoodIOU(newModelInfo.iOU):
             return
-        if not self.__isGoodMAP(newModelInfo.MAP):
+        if not self.__isGoodMAP(newModelInfo.mAP):
             return
         if self.bestModelInfo is None:
             self.bestModelInfo=newModelInfo
             return
         self.__compareModelInfo(newModelInfo)
-    def __isGoodIOU(newIOU:float)->bool:
+    def __isGoodIOU(self,newIOU:float)->bool:
         if newIOU > 0.5:
             return True
         return False
-    def __isGoodMAP(newMAP:float)->bool:
+    def __isGoodMAP(self,newMAP:float)->bool:
         if newMAP >0.5:
             return True
         return False
     def __compareModelInfo(self,newModelInfo:ModelInfo):
-        if newModelInfo.MAP > 0.6:
+        if newModelInfo.mAP > 0.6:
             self.bestModelFound.emit(self.bestModelInfo)
             return
-        if newModelInfo.MAP > self.bestModelInfo.MAP:
+        if newModelInfo.mAP > self.bestModelInfo.mAP:
             self.bestModelInfo=newModelInfo    
