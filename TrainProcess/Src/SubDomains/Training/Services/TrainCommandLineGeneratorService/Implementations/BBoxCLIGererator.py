@@ -1,5 +1,5 @@
 from .....Common.CommandLineGeneratorService.CommandLineGeneratorService import CommandLineGeneratorService
-from .....Common.OutputManager.AbstractOutputManager import AbstractOutputManager
+from .....Common.OutputManager.BBoxOutputManager import BBoxOutputManager
 from .....Common.YOROConfigFile.YOROConfigFile import YOROConfigFile
 from .....Common.PathConverter.PathConverter import PathConverter
 from ..Interfaces.ITrainCommandLineGeneratorService import ITrainCommandLineGeneratorService
@@ -30,12 +30,12 @@ class BBoxCLIGererator(ITrainCommandLineGeneratorService,CommandLineGeneratorSer
                 +WSLmodelFilePath +self.PARAMETER_SPERATOR
                 +self.PT_MODEL_FILE_NAME + self.COMMAND_SPERATOR)
     def __YOROTrainCommandLine(self)->str:
-        lastModelFilePath=AbstractOutputManager.getOutputDirPath()
+        lastModelFilePath=BBoxOutputManager().getLastModelFilePath()
         if isinstance(lastModelFilePath,str):
-            return self.__getTrainCommandLine()
-        return self.__getPretrainCommandLines(lastModelFilePath)
+            return self.__getPretrainCommandLines(lastModelFilePath)
+        return self.__getTrainCommandLine()
     def getCommadLine(self)->str:
-        outputPath=AbstractOutputManager.getOutputDirPath()
+        outputPath=BBoxOutputManager.getOutputDirPath()
         return (CommandLineGeneratorService.getWSLLoginCommand(self.WSL_DISTRIBUTOR_NAME)+ self.PARAMETER_SPERATOR 
                 + self.WSL_ACCEPT_COMMAND_KEY +self.PARAMETER_SPERATOR
                 + CommandLineGeneratorService.getCDCommandFromPath(outputPath)  + self.PARAMETER_SPERATOR 

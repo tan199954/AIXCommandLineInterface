@@ -53,7 +53,7 @@ class BBoxTrainer(AbstractQCoreAppTrainer):
         self.quitQCoreAppThread()
         raise RuntimeError(error)
     def __onResultReceived(self,result:str):
-        model=BBoxModelInfoBuilder().buildFromStr(result)
+        model=BBoxModelInfoBuilder.buildFromStr(result)
         if isinstance(model,ModelInfo):
             print(f"iou: {model.iOU}, loss: {model.loss}, map: {model.mAP}")
             self.modelEvaluator.evaluate(model)

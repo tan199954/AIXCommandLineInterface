@@ -2,6 +2,7 @@ from typing import List
 from abc import ABC,abstractproperty
 from .....Common.DataTypeChecker.DataTypeChecker import DataTypeChecker
 
+
 class AbstractYOLOMAPCoefficientFinder(ABC):
      TARGET_KEY="all"
      @abstractproperty
@@ -22,13 +23,3 @@ class AbstractYOLOMAPCoefficientFinder(ABC):
           return self.TARGET_KEY in wordList
      def __isInOfRange(self,wordList:List[str],index)->bool:
           return 0 <= index < len(wordList)
-     
-class SegMAPCoefficientFinder(AbstractYOLOMAPCoefficientFinder):
-     @property
-     def MAP_INDEX_OFFSET(self)->int:
-          return 10
-
-class BoxMAPCoefficientFinder(AbstractYOLOMAPCoefficientFinder):
-     @property
-     def MAP_INDEX_OFFSET(self)->int:
-          return 6

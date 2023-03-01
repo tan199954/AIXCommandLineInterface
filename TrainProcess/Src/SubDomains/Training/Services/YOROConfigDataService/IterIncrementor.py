@@ -11,7 +11,7 @@ class IterIncrementor:
         newIter=currentIter + 3000
         IterIncrementor.__updateIter(newIter)
     def __getCurrentIter()->int:
-        lastModelFilePath = BBoxOutputManager.getLastModelFilePath()
+        lastModelFilePath = BBoxOutputManager().getLastModelFilePath()
         if not isinstance(lastModelFilePath,str):
             return IterIncrementor.MIN_ITER
         return IterIncrementor.__getIterFromLastModelFilePath(lastModelFilePath)

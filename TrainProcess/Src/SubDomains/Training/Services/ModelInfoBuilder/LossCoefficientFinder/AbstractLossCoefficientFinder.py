@@ -36,14 +36,3 @@ class AbstractYOLOLossCoefficientFinder(ABC):
      def __isInOfRange(self,wordList:List[str],index)->bool:
           return 0 <= index < len(wordList)
      
-class SegLossCoefficientFinder(AbstractYOLOLossCoefficientFinder):
-     @property
-     def LOSS_INDEX(self)->int:
-          return 5
-
-class BoxLossCoefficientFinder(AbstractYOLOLossCoefficientFinder):
-     @property
-     def LOSS_INDEX(self)->int:
-          return 4
-
-          

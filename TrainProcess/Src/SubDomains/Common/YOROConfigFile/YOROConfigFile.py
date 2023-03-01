@@ -3,10 +3,9 @@ from ..OutputManager.AbstractOutputManager import AbstractOutputManager
 from ..YAMLFileService.YAMLFileService import YAMLFileService
 
 currentFilePath=os.path.abspath(__file__)
-configDataServicePath=os.path.dirname(currentFilePath)
-ServicesPath=os.path.dirname(configDataServicePath)
-TrainPreparationPath=os.path.dirname(ServicesPath)
-SubDomainPath=os.path.dirname(TrainPreparationPath)
+YOROConfigFilePath=os.path.dirname(currentFilePath)
+CommonPath=os.path.dirname(YOROConfigFilePath)
+SubDomainPath=os.path.dirname(CommonPath)
 SrcPath=os.path.dirname(SubDomainPath)
 TrainProcessPath=os.path.dirname(SrcPath)
 

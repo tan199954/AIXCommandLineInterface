@@ -7,7 +7,6 @@ from ...ModelEvaluator.ModelEvaluator import ModelEvaluator,ModelInfo
 from ...ModelInfoBuilder.Interfaces.IModelInfoBuilder import IModelInfoBuilder
 from ...TrainCommandLineGeneratorService.Implementations.AbstractYOLOCLIGererator import AbstractYOLOCLIGererator
 from ..Interfaces.ITrainer import ITrainer
-from .AbstractTrainer import AbstractQCoreAppTrainer
 
 
 class AbstractQCoreAppTrainer(ITrainer):

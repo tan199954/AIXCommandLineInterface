@@ -1,7 +1,7 @@
 from abc import abstractproperty
 from ..Interfaces.IModelInfoBuilder import IModelInfoBuilder, ModelInfo
-from .LossCoefficientFinder import AbstractYOLOLossCoefficientFinder
-from .MAPCoefficientFinder import AbstractYOLOMAPCoefficientFinder
+from ..LossCoefficientFinder.AbstractLossCoefficientFinder import AbstractYOLOLossCoefficientFinder
+from ..MapCoefficientFinder.AbstractMAPCoefficientFinder import AbstractYOLOMAPCoefficientFinder
 
 
 class AbstractYOLOModelInfoBuilder(IModelInfoBuilder):
