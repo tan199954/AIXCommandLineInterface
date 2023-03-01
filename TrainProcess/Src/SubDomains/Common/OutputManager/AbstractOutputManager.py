@@ -5,10 +5,11 @@ from abc import abstractclassmethod,abstractproperty, ABC
 class AbstractOutputManager(ABC):
     OUTPUT_DIR_NAME="Output"
     @abstractclassmethod
-    def isLastModelExist()->bool:
-        pass
-    @abstractclassmethod
-    def getLastModelPath()->str:
+    def getLastModelFilePath()->str:
+        """
+        Return last model file path (string) if it is exists\n
+        Elese return None
+        """
         pass
     @staticmethod
     def getOutputDirPath()->str:
@@ -29,24 +30,14 @@ class AbstractYOLOOutputManager(AbstractOutputManager):
             lastModelFilePath=os.path.join(modelDirPath,modelFilleName)
             if os.path.exists(lastModelFilePath):
                 return lastModelFilePath
-        raise FileNotFoundError(f"could not find {modelFilleName}, "
-                                "check model exist with method 'isModelExist()'")
-    def getLastModelPath(self)->str:
+    def getLastModelFilePath(self)->str:
         return self.__getModelPath(self.LAST_MODEL_FILE_NAME)
-    def getBestModelPath(self)->str:
+    def getBestModelFilePath(self)->str:
+        """
+        Return best model file path (string) if it is exists\n
+        Elese return None
+        """
         return self.__getModelPath(self.BEST_MODEL_FILE_NAME)
-    def __isModelExist(self,modelFilleName:str)->bool:
-        subTrainDirPaths=self.__getSubTrainDirPaths()
-        for dirPath in subTrainDirPaths:
-            modelDirPath = os.path.join(dirPath,self.MODEL_DIR_NAME)
-            lastModelFilePath=os.path.join(modelDirPath,modelFilleName)
-            if os.path.exists(lastModelFilePath):
-                return True
-        return False
-    def isLastModelExist(self)->bool:
-        return self.__isModelExist(self.LAST_MODEL_FILE_NAME)
-    def isBestModelExist(self)->bool:
-        return self.__isModelExist(self.BEST_MODEL_FILE_NAME)
     def __getScandirInterator(self):
         outputPath=AbstractOutputManager.getOutputDirPath()
         trainDirPath=os.path.join(outputPath,self.TRAIN_DIR_NAME)

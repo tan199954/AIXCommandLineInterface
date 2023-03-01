@@ -2,7 +2,7 @@ import os
 from typing import List
 from .AbstractTrainPreparer import AbstractTrainPreparer
 from .....Common.PathConverter.PathConverter import PathConverter
-from ...YAMLFileService.YAMLFileService import YAMLFileService
+from .....Common.YAMLFileService.YAMLFileService import YAMLFileService
 
 class YOLOTrainPreparer(AbstractTrainPreparer):
     DATA_FILE_NAME="data.yaml"

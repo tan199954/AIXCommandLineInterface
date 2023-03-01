@@ -1,6 +1,7 @@
 from .AbstractYOLOCLIGererator import AbstractYOLOCLIGererator 
 from .....Common.OutputManager.BoxOutputManager import AbstractYOLOOutputManager,BoxOutputManager
 
+
 class BoxCLIGererator(AbstractYOLOCLIGererator):
     @property
     def MODEL_DEFAULT(self)->str:

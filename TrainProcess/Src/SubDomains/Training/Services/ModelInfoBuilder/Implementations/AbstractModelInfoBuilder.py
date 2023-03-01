@@ -1,12 +1,11 @@
 from abc import abstractproperty
 from ..Interfaces.IModelInfoBuilder import IModelInfoBuilder, ModelInfo
-from .LossCoefficientFinder import SegLossCoefficientFinder,AbstractYOLOLossCoefficientFinder,BoxLossCoefficientFinder
-from .MAPCoefficientFinder import SegMAPCoefficientFinder,AbstractYOLOMAPCoefficientFinder,BoxMAPCoefficientFinder
+from .LossCoefficientFinder import AbstractYOLOLossCoefficientFinder
+from .MAPCoefficientFinder import AbstractYOLOMAPCoefficientFinder
+
 
 class AbstractYOLOModelInfoBuilder(IModelInfoBuilder):
      IOU_DEFAULT=0.7
-     def __init__(self) -> None:
-          super().__init__()
      @abstractproperty
      def lossCoefficientFinder(self)->AbstractYOLOLossCoefficientFinder:
           pass
@@ -16,13 +15,13 @@ class AbstractYOLOModelInfoBuilder(IModelInfoBuilder):
      def __init__(self) -> None:
           super().__init__()
           self.currentLoss=None
-     def setIOU(self,newIOU)->'SegModelInfoBuilder':
+     def setIOU(self,newIOU)->'AbstractYOLOModelInfoBuilder':
           self.iOU=newIOU
           return self
-     def setMAP(self,newMAP)->'SegModelInfoBuilder':
+     def setMAP(self,newMAP)->'AbstractYOLOModelInfoBuilder':
           self.mAP=newMAP
           return self
-     def setLoss(self,newLoss)->'SegModelInfoBuilder':
+     def setLoss(self,newLoss)->'AbstractYOLOModelInfoBuilder':
           self.loss=newLoss
           return self
      def build(self)->ModelInfo:
@@ -40,20 +39,4 @@ class AbstractYOLOModelInfoBuilder(IModelInfoBuilder):
                return
           self.currentLoss = None
           return ModelInfo(loss,iOU,mAP)
-
-class SegModelInfoBuilder(AbstractYOLOModelInfoBuilder):
-     @property
-     def lossCoefficientFinder(self)->AbstractYOLOLossCoefficientFinder:
-          return SegLossCoefficientFinder()
-     @property
-     def mAPCoefficientFinder(self)->AbstractYOLOMAPCoefficientFinder:
-          return SegMAPCoefficientFinder()
-
-class BoxModelInfoBuilder(AbstractYOLOModelInfoBuilder):
-     @property
-     def lossCoefficientFinder(self)->AbstractYOLOLossCoefficientFinder:
-          return BoxLossCoefficientFinder()
-     @property
-     def mAPCoefficientFinder(self)->AbstractYOLOMAPCoefficientFinder:
-          return BoxMAPCoefficientFinder()
      

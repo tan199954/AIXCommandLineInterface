@@ -21,7 +21,7 @@ train_param:
 
   max_iter: 0
   esti_iter: 100
-  bak_iter: 1000
+  bak_iter: 100
 
   train_units: 0
   moving_factor: 0.01

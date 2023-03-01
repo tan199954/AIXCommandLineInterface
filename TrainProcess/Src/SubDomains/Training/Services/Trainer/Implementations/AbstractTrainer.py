@@ -5,7 +5,7 @@ from .....Common.CommandPromptService.CommandPromptService import CommandPromptS
 from ....Exceptions.DatasetError import DatasetQualityError
 from ...ModelEvaluator.ModelEvaluator import ModelEvaluator,ModelInfo
 from ...ModelInfoBuilder.Interfaces.IModelInfoBuilder import IModelInfoBuilder
-from ...CommandLineGeneratorService.Implementations.AbstractYOLOCLIGererator import AbstractYOLOCLIGererator
+from ...TrainCommandLineGeneratorService.Implementations.AbstractYOLOCLIGererator import AbstractYOLOCLIGererator
 from ..Interfaces.ITrainer import ITrainer
 from .AbstractTrainer import AbstractQCoreAppTrainer
 
@@ -34,6 +34,9 @@ class AbstractQCoreAppTrainer(ITrainer):
           signal.default_int_handler(signalNum,frame)
 
 class AbstractYOLOTrainer(AbstractQCoreAppTrainer):
+     def __init__(self,manual:bool=False) -> None:
+          super().__init__()
+          self.manual=manual
      @abstractproperty
      def YOLOCLIGenerator(self)->AbstractYOLOCLIGererator:
           pass
@@ -42,10 +45,11 @@ class AbstractYOLOTrainer(AbstractQCoreAppTrainer):
           pass
      def defineMainFuncitionOfQCoreAppThread(self):
           self.CMDService=CommandPromptService()
-          self.modelEvaluator=ModelEvaluator()
-          self.modelEvaluator.bestModelFound.connect(self.__onBestModelFound)
-          self.modelEvaluator.learningRateMustDecrease.connect(self.__decreaseLearningRate)
-          self.modelEvaluator.datasetLowQuality.connect(self.__onDatasetLowQuality)
+          if not self.manual:
+               self.modelEvaluator=ModelEvaluator()
+               self.modelEvaluator.bestModelFound.connect(self.__onBestModelFound)
+               self.modelEvaluator.learningRateMustDecrease.connect(self.__decreaseLearningRate)
+               self.modelEvaluator.datasetLowQuality.connect(self.__onDatasetLowQuality)
           self.appThr.app.aboutToQuit.connect(self.__cleanUpPySide6Classes)
           self.__startTrain()
      def __startTrain(self):
@@ -91,6 +95,9 @@ class AbstractYOLOTrainer(AbstractQCoreAppTrainer):
           continue training.
           """
           self.__stopTrain()
-          self.__startTrain()
+          if not self.manual:
+               self.__startTrain()
+          else:
+               self.quitQCoreAppThread()
      def __cleanUpPySide6Classes(self):
           self.__stopTrain()

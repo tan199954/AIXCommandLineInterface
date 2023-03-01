@@ -1,16 +1,12 @@
 from abc import abstractproperty
-from ..Interfaces.ICommandLineGeneratorService import ICommandLineGeneratorService
+from ..Interfaces.ITrainCommandLineGeneratorService import ITrainCommandLineGeneratorService
 from .....Common.PathConverter.PathConverter import PathConverter
 from .....Common.OutputManager.AbstractOutputManager import AbstractYOLOOutputManager
+from .....Common.CommandLineGeneratorService.CommandLineGeneratorService import CommandLineGeneratorService
 
-
-class AbstractYOLOCLIGererator(ICommandLineGeneratorService):
-    WSL_LOGIN_COMMAND="wsl -d IMWI_WSL_Yoro"
+class AbstractYOLOCLIGererator(ITrainCommandLineGeneratorService,CommandLineGeneratorService):
+    WSL_DISTRIBUTOR_NAME="IMWI_WSL_Yoro"
     DATA_FILE_NAME="data.yaml"
-    COMMAND_SPERATOR=";"
-    PARAMETER_SPERATOR=" "
-    ACCEPT_COMMAND_KEY="--"
-    KEEP_FULL_PATH_KEY='"'
     @abstractproperty
     def MODEL_DEFAULT(self)->str:
         pass
@@ -26,9 +22,9 @@ class AbstractYOLOCLIGererator(ICommandLineGeneratorService):
         self.imageSize=imageSize
         self.batchSize=batchSize
     def __getYOLOCommandLine(self)->str:
-        if self.abstractYOLOOutputManager.isLastModelExist():
+        if self.abstractYOLOOutputManager.getLastModelFilePath() is not None:
             modelPath=(self.KEEP_FULL_PATH_KEY + 
-                       PathConverter.Windows2WSL(self.abstractYOLOOutputManager.getLastModelPath())
+                       PathConverter.Windows2WSL(self.abstractYOLOOutputManager.getLastModelFilePath())
                     + self.KEEP_FULL_PATH_KEY)
         else:
             modelPath=self.MODEL_DEFAULT
@@ -38,17 +34,11 @@ class AbstractYOLOCLIGererator(ICommandLineGeneratorService):
             + "imgsz=" + str(self.imageSize) + self.PARAMETER_SPERATOR
             + "batch=" + str(self.batchSize) + self.PARAMETER_SPERATOR
             + "lr0=" + str(self.learningRate) + self.COMMAND_SPERATOR)
-    def __getCDOutputCommandLine(self)->str:
-        outputDirPath=AbstractYOLOOutputManager.getOutputDirPath()
-        wslOutputPath= (self.KEEP_FULL_PATH_KEY 
-                        + PathConverter.Windows2WSL(outputDirPath) 
-                        + self.KEEP_FULL_PATH_KEY)
-        return ("cd /" +self.COMMAND_SPERATOR + self.PARAMETER_SPERATOR
-                + "cd " + wslOutputPath+ self.COMMAND_SPERATOR)
     def decreaseLearningRate(self):
         self.learningRate=self.learningRate/10
     def getCommadLine(self)->str:
-        return (self.WSL_LOGIN_COMMAND + self.PARAMETER_SPERATOR 
-                + self.ACCEPT_COMMAND_KEY + self.PARAMETER_SPERATOR
-                + self.__getCDOutputCommandLine() + self.PARAMETER_SPERATOR 
+        outputPath=AbstractYOLOOutputManager.getOutputDirPath()
+        return ( CommandLineGeneratorService.getWSLLoginCommand(self.WSL_DISTRIBUTOR_NAME)+ self.PARAMETER_SPERATOR 
+                + self.WSL_ACCEPT_COMMAND_KEY + self.PARAMETER_SPERATOR
+                + CommandLineGeneratorService.getCDCommandFromPath(outputPath)  + self.PARAMETER_SPERATOR 
                 + self.__getYOLOCommandLine())
