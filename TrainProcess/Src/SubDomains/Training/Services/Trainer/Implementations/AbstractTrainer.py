@@ -1,6 +1,5 @@
-import signal
-from abc import abstractclassmethod, abstractproperty
-from .....Common.ApplicationThread.ApplicationThread import QCoreApplicationThread
+from abc import abstractproperty
+from .....Common.ApplicationThread.ApplicationThread import AbstractQCoreApplicationThreadManager
 from .....Common.CommandPromptService.CommandPromptService import CommandPromptService
 from ....Exceptions.DatasetError import DatasetQualityError
 from ...ModelEvaluator.ModelEvaluator import ModelEvaluator,ModelInfo
@@ -9,30 +8,7 @@ from ...TrainCommandLineGeneratorService.Implementations.AbstractYOLOCLIGererato
 from ..Interfaces.ITrainer import ITrainer
 
 
-class AbstractQCoreAppTrainer(ITrainer):
-     def __init__(self) -> None:
-        signal.signal(signal.SIGINT,self.__cleanUpOnSIGINT)
-        self.appThr=QCoreApplicationThread(self.defineMainFuncitionOfQCoreAppThread)
-     @abstractclassmethod
-     def defineMainFuncitionOfQCoreAppThread(self):
-          pass
-     def train(self):
-          self.appThr.start()
-          self.__keepPointer()
-     def quitQCoreAppThread(self):
-          self.appThr.app.quit()
-     def __keepPointer(self):
-          while self.appThr.isRunning():
-               pass
-          signal.signal(signal.SIGINT,signal.default_int_handler)
-     def __cleanUpOnSIGINT(self,signalNum,frame):
-          self.quitQCoreAppThread()
-          while self.appThr.isRunning():
-               pass
-          signal.signal(signal.SIGINT,signal.default_int_handler)
-          signal.default_int_handler(signalNum,frame)
-
-class AbstractYOLOTrainer(AbstractQCoreAppTrainer):
+class AbstractYOLOTrainer(AbstractQCoreApplicationThreadManager,ITrainer):
      def __init__(self,manual:bool=False) -> None:
           super().__init__()
           manual=manual or False
@@ -43,6 +19,8 @@ class AbstractYOLOTrainer(AbstractQCoreAppTrainer):
      @abstractproperty
      def modelInfoBuilder(self)->IModelInfoBuilder:
           pass
+     def train(self):
+          self.execute()
      def defineMainFuncitionOfQCoreAppThread(self):
           self.CMDService=CommandPromptService()
           if not self.manual:
@@ -57,7 +35,7 @@ class AbstractYOLOTrainer(AbstractQCoreAppTrainer):
           self.CMDService.errorFinished.connect(self.__onErrorFinished)
           self.CMDService.outputReceived.connect(self.__onResultReceived)
           self.CMDService.errorReceived.connect(self.__onResultReceived)
-          commandLine=self.YOLOCLIGenerator.getCommadLine()
+          commandLine=self.YOLOCLIGenerator.getCommandLine()
           self.CMDService.commandLine=commandLine
           self.CMDService.start()
      def __stopTrain(self):

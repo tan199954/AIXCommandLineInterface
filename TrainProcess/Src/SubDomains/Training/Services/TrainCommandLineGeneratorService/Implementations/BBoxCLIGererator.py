@@ -1,12 +1,11 @@
-from .....Common.CommandLineGeneratorService.CommandLineGeneratorService import CommandLineGeneratorService
+from .....Common.CommandLineGeneratorService.CommandLineGeneratorService import WSLCommandLineGenerator
 from .....Common.OutputManager.BBoxOutputManager import BBoxOutputManager
 from .....Common.YOROConfigFile.YOROConfigFile import YOROConfigFile
 from .....Common.PathConverter.PathConverter import PathConverter
 from ..Interfaces.ITrainCommandLineGeneratorService import ITrainCommandLineGeneratorService
 
 
-class BBoxCLIGererator(ITrainCommandLineGeneratorService,CommandLineGeneratorService):
-    WSL_DISTRIBUTOR_NAME="IMWI_WSL_Yoro"
+class BBoxCLIGererator(ITrainCommandLineGeneratorService,WSLCommandLineGenerator):
     YORO_TRAIN_COMMAND="trainer"
     PRETRAIN_KEY="--pretrain"
     YORO_PRETRAIN_EXPORT_COMMAND="pretrain_exporter"
@@ -34,9 +33,9 @@ class BBoxCLIGererator(ITrainCommandLineGeneratorService,CommandLineGeneratorSer
         if isinstance(lastModelFilePath,str):
             return self.__getPretrainCommandLines(lastModelFilePath)
         return self.__getTrainCommandLine()
-    def getCommadLine(self)->str:
+    def getCommandLine(self)->str:
         outputPath=BBoxOutputManager.getOutputDirPath()
-        return (CommandLineGeneratorService.getWSLLoginCommand(self.WSL_DISTRIBUTOR_NAME)+ self.PARAMETER_SPERATOR 
+        return (WSLCommandLineGenerator.getWSLLoginCommand(self.WSL_DISTRIBUTOR_NAME)+ self.PARAMETER_SPERATOR 
                 + self.WSL_ACCEPT_COMMAND_KEY +self.PARAMETER_SPERATOR
-                + CommandLineGeneratorService.getCDCommandFromPath(outputPath)  + self.PARAMETER_SPERATOR 
+                + WSLCommandLineGenerator.getCDCommandFromPath(outputPath)  + self.PARAMETER_SPERATOR 
                 +self.__YOROTrainCommandLine())

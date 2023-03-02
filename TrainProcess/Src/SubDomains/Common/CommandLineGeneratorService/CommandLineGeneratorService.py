@@ -16,3 +16,6 @@ class CommandLineGeneratorService:
         @staticmethod
         def getWSLLoginCommand(distributorName:str):
               return "wsl -d " +distributorName
+
+class WSLCommandLineGenerator(CommandLineGeneratorService):
+        WSL_DISTRIBUTOR_NAME="IMWI_WSL_Yoro"

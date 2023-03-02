@@ -12,7 +12,7 @@ class QCoreApplicationThread(QtCore.QThread):
         self.defineMainFuncitionOfQCoreAppThread()
         self.app.exec()
 
-class AbstractQCoreApp:
+class AbstractQCoreApplicationThreadManager:
      def __init__(self) -> None:
         signal.signal(signal.SIGINT,self.__cleanUpOnSIGINT)
         self.appThr=QCoreApplicationThread(self.defineMainFuncitionOfQCoreAppThread)

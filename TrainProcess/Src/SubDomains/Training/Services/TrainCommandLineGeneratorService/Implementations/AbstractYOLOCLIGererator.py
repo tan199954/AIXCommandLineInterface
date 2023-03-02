@@ -2,10 +2,9 @@ from abc import abstractproperty
 from ..Interfaces.ITrainCommandLineGeneratorService import ITrainCommandLineGeneratorService
 from .....Common.PathConverter.PathConverter import PathConverter
 from .....Common.OutputManager.AbstractOutputManager import AbstractYOLOOutputManager
-from .....Common.CommandLineGeneratorService.CommandLineGeneratorService import CommandLineGeneratorService
+from .....Common.CommandLineGeneratorService.CommandLineGeneratorService import WSLCommandLineGenerator
 
-class AbstractYOLOCLIGererator(ITrainCommandLineGeneratorService,CommandLineGeneratorService):
-    WSL_DISTRIBUTOR_NAME="IMWI_WSL_Yoro"
+class AbstractYOLOCLIGererator(ITrainCommandLineGeneratorService,WSLCommandLineGenerator):
     DATA_FILE_NAME="data.yaml"
     @abstractproperty
     def MODEL_DEFAULT(self)->str:
@@ -39,9 +38,9 @@ class AbstractYOLOCLIGererator(ITrainCommandLineGeneratorService,CommandLineGene
             + "lr0=" + str(self.learningRate) + self.COMMAND_SPERATOR)
     def decreaseLearningRate(self):
         self.learningRate=self.learningRate/10
-    def getCommadLine(self)->str:
+    def getCommandLine(self)->str:
         outputPath=AbstractYOLOOutputManager.getOutputDirPath()
-        return ( CommandLineGeneratorService.getWSLLoginCommand(self.WSL_DISTRIBUTOR_NAME)+ self.PARAMETER_SPERATOR 
+        return ( WSLCommandLineGenerator.getWSLLoginCommand(self.WSL_DISTRIBUTOR_NAME)+ self.PARAMETER_SPERATOR 
                 + self.WSL_ACCEPT_COMMAND_KEY + self.PARAMETER_SPERATOR
-                + CommandLineGeneratorService.getCDCommandFromPath(outputPath)  + self.PARAMETER_SPERATOR 
+                + WSLCommandLineGenerator.getCDCommandFromPath(outputPath)  + self.PARAMETER_SPERATOR 
                 + self.__getYOLOCommandLine())

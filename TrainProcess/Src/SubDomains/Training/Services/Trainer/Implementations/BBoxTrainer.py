@@ -1,4 +1,5 @@
 from .....Common.CommandPromptService.CommandPromptService import CommandPromptService
+from .....Common.ApplicationThread.ApplicationThread import AbstractQCoreApplicationThreadManager
 from ....Exceptions.DatasetError import DatasetQualityError
 from ...ModelEvaluator.ModelEvaluator import ModelEvaluator
 from ...TrainCommandLineGeneratorService.Implementations.BBoxCLIGererator import BBoxCLIGererator 
@@ -6,10 +7,11 @@ from ...ModelInfoBuilder.Implementations.BBoxModelInfoBuilder import ModelInfo, 
 from ...YOROConfigDataService.IterIncrementor import IterIncrementor
 from ...YOROConfigDataService.LearningRateDecrementor import LearningRateDecrementor
 from ...YOROConfigDataService.BatchSizeChanger import BatchSizeChanger
-from .AbstractTrainer import AbstractQCoreAppTrainer
+from ..Interfaces.ITrainer import ITrainer
 
 
-class BBoxTrainer(AbstractQCoreAppTrainer):
+
+class BBoxTrainer(AbstractQCoreApplicationThreadManager,ITrainer):
     def __init__(self,learningRate:float,imageSize:int,batchSize:int,manual:bool=False) -> None:
           super().__init__()
           manual=manual or False
@@ -18,6 +20,8 @@ class BBoxTrainer(AbstractQCoreAppTrainer):
     def __updateConfigParams(self,batchSize):
         if isinstance(batchSize,int):
               BatchSizeChanger.change(batchSize)
+    def train(self):
+        self.execute()
     def defineMainFuncitionOfQCoreAppThread(self):
         self.CMDService=CommandPromptService()
         if not self.manual:
@@ -32,7 +36,7 @@ class BBoxTrainer(AbstractQCoreAppTrainer):
         self.CMDService.errorFinished.connect(self.__onErrorFinished)
         self.CMDService.outputReceived.connect(self.__onResultReceived)
         IterIncrementor.increase()
-        commandLine=BBoxCLIGererator().getCommadLine()
+        commandLine=BBoxCLIGererator().getCommandLine()
         self.CMDService.commandLine=commandLine
         self.CMDService.start()
     def __stopTrain(self):
