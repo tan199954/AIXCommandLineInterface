@@ -18,6 +18,9 @@ class AbstractYOLOCLIGererator(ITrainCommandLineGeneratorService,CommandLineGene
         pass
     def __init__(self,learningRate:float=0.01,imageSize:int=320,batchSize:int=32) -> None:
         super().__init__()
+        learningRate=learningRate or 0.01
+        imageSize=imageSize or 320
+        batchSize=batchSize or 32
         self.learningRate=learningRate
         self.imageSize=imageSize
         self.batchSize=batchSize

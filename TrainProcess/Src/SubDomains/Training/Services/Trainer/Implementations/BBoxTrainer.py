@@ -5,13 +5,19 @@ from ...TrainCommandLineGeneratorService.Implementations.BBoxCLIGererator import
 from ...ModelInfoBuilder.Implementations.BBoxModelInfoBuilder import ModelInfo, BBoxModelInfoBuilder
 from ...YOROConfigDataService.IterIncrementor import IterIncrementor
 from ...YOROConfigDataService.LearningRateDecrementor import LearningRateDecrementor
+from ...YOROConfigDataService.BatchSizeChanger import BatchSizeChanger
 from .AbstractTrainer import AbstractQCoreAppTrainer
 
 
 class BBoxTrainer(AbstractQCoreAppTrainer):
-    def __init__(self,manual:bool=False) -> None:
+    def __init__(self,learningRate:float,imageSize:int,batchSize:int,manual:bool=False) -> None:
           super().__init__()
+          manual=manual or False
           self.manual=manual
+          self.__updateConfigParams(batchSize)
+    def __updateConfigParams(self,batchSize):
+        if isinstance(batchSize,int):
+              BatchSizeChanger.change(batchSize)
     def defineMainFuncitionOfQCoreAppThread(self):
         self.CMDService=CommandPromptService()
         if not self.manual:

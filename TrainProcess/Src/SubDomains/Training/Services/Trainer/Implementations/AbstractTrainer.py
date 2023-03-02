@@ -16,7 +16,7 @@ class AbstractQCoreAppTrainer(ITrainer):
      @abstractclassmethod
      def defineMainFuncitionOfQCoreAppThread(self):
           pass
-     def execute(self):
+     def train(self):
           self.appThr.start()
           self.__keepPointer()
      def quitQCoreAppThread(self):
@@ -35,6 +35,7 @@ class AbstractQCoreAppTrainer(ITrainer):
 class AbstractYOLOTrainer(AbstractQCoreAppTrainer):
      def __init__(self,manual:bool=False) -> None:
           super().__init__()
+          manual=manual or False
           self.manual=manual
      @abstractproperty
      def YOLOCLIGenerator(self)->AbstractYOLOCLIGererator:

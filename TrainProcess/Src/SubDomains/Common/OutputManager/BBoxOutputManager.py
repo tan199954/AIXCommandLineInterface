@@ -5,6 +5,7 @@ from .AbstractOutputManager import AbstractOutputManager
 class BBoxOutputManager(AbstractOutputManager):
     MODEL_DIR_NAME="models.backup"
     MODEL_FILE_EXTENSION=".sdict"
+    OUTPUT_MODEL_FILE_EXTENSION=".zip"
     LAST_MODEL_FILE_INDEX=0
     def getLastModelFilePath(self)->str:
         """
@@ -16,6 +17,20 @@ class BBoxOutputManager(AbstractOutputManager):
             return
         backupFiles=os.listdir(backupDir)
         modelFiles=[os.path.join(backupDir, file) for file in backupFiles if file.endswith(self.MODEL_FILE_EXTENSION)]
+        sortedModelFiles = sorted(modelFiles, key=lambda filePath: os.path.getmtime(filePath),reverse=True)   
+        if not sortedModelFiles:
+            return
+        return sortedModelFiles[self.LAST_MODEL_FILE_INDEX]
+    def getOutputModelFilePath(self):
+        """
+        Return output model file path (string), if it is exists.\n
+        Else return None
+        """
+        outputDirPath=AbstractOutputManager.getOutputDirPath()
+        if not os.path.exists(outputDirPath):
+            return
+        backupFiles=os.listdir(outputDirPath)
+        modelFiles=[os.path.join(outputDirPath, file) for file in backupFiles if file.endswith(self.OUTPUT_MODEL_FILE_EXTENSION)]
         sortedModelFiles = sorted(modelFiles, key=lambda filePath: os.path.getmtime(filePath),reverse=True)   
         if not sortedModelFiles:
             return
