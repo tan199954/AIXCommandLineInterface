@@ -11,5 +11,5 @@ class DetectProcessor:
             image = self.imageProcessor.getNewImage()
             if image is None:
                 continue
-            result=self.detector.getObjectInfo(image)
+            result=self.detector.getObjectsInfo(image)
             self.imageProcessor.exportResult(result)

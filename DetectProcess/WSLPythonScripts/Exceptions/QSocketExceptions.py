@@ -1,0 +1,2 @@
+class QTcpSocketErrorOccurred(Exception):
+    pass
