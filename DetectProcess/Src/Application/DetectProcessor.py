@@ -1,15 +1,14 @@
 from ..Enum.DetectType import DetectType
-from ..SubDomains.Detection.Factory.DetectorFactory import DetectorFactory
-from ..SubDomains.ImageProcess.Factory.ImageProcessorFactory import ImageProcessorFactory
+from ..SubDomains.Common.ApplicationThread.ApplicationThread import AbstractQCoreApplicationThreadManager
+from ..SubDomains.WSLDetectingScriptCommunication.Services.WSLDetectingScriptsCommunicator.WSLDetectingScriptsCommunicator import WSLDetectingScriptsCommunicator
+from ..SubDomains.DetectedObjectExportation.Factory
+from ..SubDomains.ImageSourceManagement.Factory.ImageProcessorFactory import ImageSourceManagerFactory
 
-class DetectProcessor:
+class DetectProcessor(AbstractQCoreApplicationThreadManager):
     def __init__(self,detectType:DetectType,modelFilePath:str,source:str) -> None:
+        super().__init__()
+        wSLDetectingScriptsCommunicator=WSLDetectingScriptsCommunicator()
         self.detector=DetectorFactory.createDetector(detectType,modelFilePath)
         self.imageProcessor=ImageProcessorFactory.createImageProcessor(source)
-    def execute(self):
-        while self.imageProcessor.isContinuingImageAnalysis():
-            image = self.imageProcessor.getNewImage()
-            if image is None:
-                continue
-            result=self.detector.getObjectsInfo(image)
-            self.imageProcessor.exportResult(result)
+    def defineMainFuncitionOfQCoreAppThread(self):
+        pass
