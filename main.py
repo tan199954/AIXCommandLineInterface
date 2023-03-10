@@ -11,11 +11,12 @@ from DetectProcess.Src.Api import DetectProcess
 
 
 def parse_opt():
+
     parser = argparse.ArgumentParser()
     subparsers = parser.add_subparsers()
-
+    choices = [dt.name for dt in TrainType]
     initParser = subparsers.add_parser("init",help="initial initialize process")
-    initParser.add_argument("-t","--typeOfTrain",type=TrainType,help="'Box' or 'BBox' or 'Seg'")
+    initParser.add_argument("-t","--typeOfTrain",type=TrainType,choices=choices)
     initParser.add_argument("-i","--imagePath",type=str,help="full/path/to/images directory")
     initParser.add_argument("-l","--labelPath",type=str,help="full/path/to/labels directory")
     initParser.set_defaults(func=Init)
@@ -24,7 +25,8 @@ def parse_opt():
     trainParser.set_defaults(func=Train)
 
     detectParser = subparsers.add_parser('detect', help='initial detect process')
-    detectParser.add_argument("-s","--source",type=str,help="full/path/to/image or video or ipAdress/port")
+    detectParser.add_argument("-s","--source",type=str,nargs="+",help="'full/path/to/imageFile of videoFle'\n"
+                                                            " or ip='IP adress' port='port number from 0 to 65535'\n ")
     detectParser.set_defaults(func=Detect)
 
     return parser
@@ -35,8 +37,23 @@ def Train():
      train = TrainProcess()
      train.execute()
 def Detect(source):
-     if source is None: 
-          raise argparse.ArgumentTypeError('usage: AIXCLI.exe detect -h \nmissed some arguments')
+     def checkSourceArg(source:list):
+          IMAGE_SOURCE_LEN=1
+          TCP_IP_SOURCE_LEN=2
+          if len(source) == IMAGE_SOURCE_LEN:
+               return source[0]
+          if len(source) != TCP_IP_SOURCE_LEN or 'ip=' not in source[0] or 'port=' not in source[1]:
+               raise argparse.ArgumentTypeError("Invalid --source argument format.")
+          ip = source[0].split('=')[1]
+          port = source[1].split('=')[1]
+          try:
+               port = int(port)
+               if not 0 <= port <= 65535:
+                    raise ValueError()
+          except ValueError:
+               raise argparse.ArgumentTypeError("Invalid port number.")
+          return {'ip': ip, 'port': port}
+     source=checkSourceArg(source)
      sys.stdout.write("Waiting for the detection...\n")
      sys.stdout.flush()
      detect = DetectProcess(source)
@@ -44,6 +61,7 @@ def Detect(source):
 def Init(labelPath,imagePath,typeOfTrain):
      if imagePath is None or labelPath is None or typeOfTrain is None:
          raise argparse.ArgumentTypeError('usage: AIXCLI.exe init -h \nmissed some arguments')
+     typeOfTrain=TrainType(typeOfTrain)
      sys.stdout.write("Waiting for the initialization...\n")
      sys.stdout.flush()
      init = InitProcess(imagePath,labelPath,typeOfTrain)
