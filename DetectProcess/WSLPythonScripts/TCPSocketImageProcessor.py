@@ -1,7 +1,7 @@
 from PySide6 import QtCore,QtNetwork
 import numpy as np
-from .Exceptions.QSocketExceptions import QTcpSocketErrorOccurred
-from .TCPSocketImageBuilder import TCPSocketImageBuilder
+from Exceptions.QSocketExceptions import QTcpSocketErrorOccurred
+from TCPSocketImageBuilder import TCPSocketImageBuilder
 
 class TCPSocketImageProcessor(QtCore.QObject):
     imageReceived = QtCore.Signal(np.ndarray)

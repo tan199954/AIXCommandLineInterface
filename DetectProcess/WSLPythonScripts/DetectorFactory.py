@@ -1,7 +1,7 @@
 from enum import Enum
-from .Detector.IDetector import IDetector
-from .Detector.YOLODetector import BoxDetector,SegDetector
-from .Detector.YORODetector import YORODetector
+from Detector.IDetector import IDetector
+from Detector.YOLODetector import BoxDetector,SegDetector
+from Detector.YORODetector import YORODetector
 
 
 class DetectorType(Enum):

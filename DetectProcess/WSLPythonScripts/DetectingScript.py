@@ -1,8 +1,8 @@
 import argparse
 from PySide6 import QtCore
 import numpy as np
-from .DetectorFactory import DetectorFactory,DetectorType
-from .TCPSocketImageProcessor import TCPSocketImageProcessor
+from DetectorFactory import DetectorFactory,DetectorType
+from TCPSocketImageProcessor import TCPSocketImageProcessor
     
 def parse_opt():
     choices = [dt.name for dt in DetectorType]
