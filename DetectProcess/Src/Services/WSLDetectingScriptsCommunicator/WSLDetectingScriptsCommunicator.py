@@ -33,6 +33,10 @@ class WSLDetectingScriptsCommunicator(QtCore.QObject):
     def __onDisconnected(self):
         sys.stdout.write(f"WSL client disconnected: from adress: {self.server.serverAddress()}, ip: {self.server.serverPort()}\n")
         sys.stdout.flush()
+    def __getSed(self,colByte,sedNum):
+        if 1024 < colByte - sedNum:
+            return 1024
+        return colByte - sedNum          
     def writeImage(self,image:np.ndarray):
         if not self.socket.state() == QtNetwork.QTcpSocket.ConnectedState:
             return
@@ -49,9 +53,12 @@ class WSLDetectingScriptsCommunicator(QtCore.QObject):
             data = image[i].tobytes()
             sedNum = 0
             while (sedNum < colByte):
-                sed = self.getSed(colByte,sedNum)
+                sed = self.__getSed(colByte,sedNum)
                 buf = data[sedNum:sedNum+sed]
                 sendSize = self.socket.write(buf)
                 if (sendSize == -1):
                     break
                 sedNum += sendSize  
+    def __del__(self):
+        self.server.close()
+        self.server.deleteLater()

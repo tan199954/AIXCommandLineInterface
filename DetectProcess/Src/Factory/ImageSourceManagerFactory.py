@@ -1,19 +1,19 @@
 from typing import Union
-from PySide6 import QtNetwork
 from ..Enum.ImageSourceType import ImageSourceType
 from ..Services.ImageSourceManager.Interfaces import IImageSourceManager
-from ..Services.ImageSourceManager.Implementation import FilePathImageSourceManager,TcpServerImageSoureManager,TcpClientImageSoureManager
-from ..Services.ImageSourceDetector.ImageSourceDetector import ImageSourceDetector
+from ..Services.ImageSourceManager.Implementation import FileImageSourceManager,TcpServerImageSoureManager,TcpClientImageSoureManager
+from ..Services.DataTypeDetector.Detector import ImageSourceTypeDetector
+from ..Services.SocketManager.SocketManager import TcpSocketManager
 
 
 class ImageSourceManagerFactory:
-    IMAGE_SOUCRE = {ImageSourceType.File:FilePathImageSourceManager,
+    IMAGE_SOUCRE = {ImageSourceType.File:FileImageSourceManager,
                     ImageSourceType.TcpServer:TcpServerImageSoureManager,
                     ImageSourceType.TcpClient:TcpClientImageSoureManager}
-    @staticmethod
-    def createImageSourceManager(source:Union[str,dict],imageSourceSocket:QtNetwork.QTcpSocket)->IImageSourceManager:
-        imageSourceType= ImageSourceDetector.getImageSourceType(source)
-        imageSourceManager = ImageSourceManagerFactory.IMAGE_SOUCRE[imageSourceType]
-        if isinstance(imageSourceManager,FilePathImageSourceManager):
+    @classmethod
+    def createImageSourceManager(cls,source:Union[str,dict],tcpSocketManager:TcpSocketManager)->IImageSourceManager:
+        imageSourceType= ImageSourceTypeDetector.getImageSourceType(source)
+        imageSourceManager = cls.IMAGE_SOUCRE[imageSourceType]
+        if issubclass(imageSourceManager,FileImageSourceManager):
             return imageSourceManager(source)
-        return imageSourceManager(source,imageSourceSocket)
+        return imageSourceManager(source,tcpSocketManager)

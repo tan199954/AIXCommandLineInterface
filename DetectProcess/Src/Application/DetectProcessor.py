@@ -1,12 +1,13 @@
 from typing import Union
-from PySide6 import QtNetwork
 from ..Enum.DetectType import DetectType
 from ..Factory.ImageSourceManagerFactory import ImageSourceManagerFactory
-from ..Factory.DetectdObjectExporterFactory import DetectdObjectExporterFactory
+from ..Factory.DetectdObjectExporterFactory import DetectedObjectExporterFactory
 from ..Services.Common.ApplicationThread.ApplicationThread import AbstractQCoreApplicationThreadManager
 from ..Services.Common.WSLManager.WSLManager import WSLManager
 from ..Services.WSLDetectingScriptsCommunicator.WSLDetectingScriptsCommunicator import WSLDetectingScriptsCommunicator
 from ..Services.WSLDetectingScriptCommandExecutor.WSLDetectingScriptCommandExcutor import WSLDetectingScriptCommandExcutor
+from ..Services.SocketManager.SocketManager import TcpSocketManager
+
 
 class DetectProcessor(AbstractQCoreApplicationThreadManager):
     def __init__(self,detectType:DetectType,modelFilePath:str,source: Union[str,dict]) -> None:
@@ -16,12 +17,12 @@ class DetectProcessor(AbstractQCoreApplicationThreadManager):
         self.source=source
         self.wslIp=WSLManager.getIPv4Adress()
         self.wslPort=WSLManager.getAvailablePort()
-        self.imageSourceSocket = QtNetwork.QTcpSocket() # this socket is connect to image source if it use TCP to send image
     def defineMainFuncitionOfQCoreAppThread(self):
+        self.tcpSocketManager=TcpSocketManager()
         self.wSLCommunicator=WSLDetectingScriptsCommunicator(self.wslIp,self.wslPort)
         self.wSLCommandExcutor=WSLDetectingScriptCommandExcutor(self.wslIp,self.wslPort,self.detectType,self.modelFilePath)
-        self.imageSourceManager=ImageSourceManagerFactory.createImageSourceManager(self.source,self.imageSourceSocket)
-        self.detectdObjectExporters=DetectdObjectExporterFactory.createDetectdObjectExporters(self.source,self.imageSourceSocket)
+        self.imageSourceManager=ImageSourceManagerFactory.createImageSourceManager(self.source,self.tcpSocketManager)
+        self.detectdObjectExporters=DetectedObjectExporterFactory.createDetectdObjectExporters(self.source,self.tcpSocketManager)
         
         self.wSLCommunicator.server.newConnection.connect(self.__onWSLCommunicatorNewConnection)
         self.wSLCommunicator.resultReceived.connect(self.__onResultReceived)
@@ -44,6 +45,7 @@ class DetectProcessor(AbstractQCoreApplicationThreadManager):
     def __detectObjects(self):
         if not self.imageSourceManager.isContinueGeneratingImages():
             self.quitQCoreAppThread()
+            return
         self.wSLCommunicator.writeImage(self.imageSourceManager.getImage())
     def __onErrorFinished(self,error:str):
         self.quitQCoreAppThread()
@@ -54,3 +56,8 @@ class DetectProcessor(AbstractQCoreApplicationThreadManager):
         self.quitQCoreAppThread()
     def __cleanUpPySide6Classes(self):
         self.wSLCommandExcutor.stop()
+        self.tcpSocketManager = None #smiler del pointer
+        self.wSLCommunicator = None #smiler del pointer
+        self.imageSourceManager = None #smiler del pointer
+        for exporter in self.detectdObjectExporters:
+            exporter = None #smiler del pointer
