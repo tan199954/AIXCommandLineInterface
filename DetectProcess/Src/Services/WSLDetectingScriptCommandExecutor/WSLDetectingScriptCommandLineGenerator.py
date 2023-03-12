@@ -19,19 +19,19 @@ class WSLDetectingScriptCommandLineGenerator(WSLCommandLineGenerator):
     TYPE_KEY ="--type"
     MODEL_FILE_PATH_KEY ="--modelFilePath"
     DETECTING_SCRIPTS_FILE_NAME="DetectingScript.py"
-    def __init__(self,ip:str,port:int,detectType:DetectType,wSLModelFilePath:str) -> None:
+    def __init__(self,ip:str,port:int,detectType:DetectType,wslModelFilePath:str) -> None:
         super().__init__()
         self._ip=ip
         self._port=port
         self._detectTypeValue=detectType.value
-        self._modelFilePath=wSLModelFilePath
+        self._modelFilePath=wslModelFilePath
     def __getPythonScriptCommand(self):
         return (self.SCRIPT_LANGUAGE +self.PARAMETER_SPERATOR
                 +self.DETECTING_SCRIPTS_FILE_NAME + self.PARAMETER_SPERATOR
                 +self.IP_KEY + self.PARAMETER_SPERATOR + self._ip + self.PARAMETER_SPERATOR
-                +self.PORT_KEY + self.PARAMETER_SPERATOR + self._port + self.PARAMETER_SPERATOR
+                +self.PORT_KEY + self.PARAMETER_SPERATOR + str(self._port) + self.PARAMETER_SPERATOR
                 +self.TYPE_KEY + self.PARAMETER_SPERATOR + self._detectTypeValue + self.PARAMETER_SPERATOR
-                +self.MODEL_FILE_PATH_KEY + self.PARAMETER_SPERATOR + self._modelFilePath + self.COMMAND_SPERATOR)
+                +self.MODEL_FILE_PATH_KEY + self.PARAMETER_SPERATOR + self.addQuotesToPath(self._modelFilePath) + self.COMMAND_SPERATOR)
     def getCommandLine(self)->str:
         return (WSLCommandLineGenerator.getWSLLoginCommand() +self.PARAMETER_SPERATOR
                + self.WSL_ACCEPT_COMMAND_KEY + self.PARAMETER_SPERATOR
