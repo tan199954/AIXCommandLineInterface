@@ -3,7 +3,6 @@ from ....Enum.TrainType import TrainType
 from ..Services.TrainPreparer.Interfaces.ITrainPreparer import ITrainPreparer
 from ..Services.TrainPreparer.Implementation.YOLOTrainPreparer import YOLOTrainPreparer
 from ..Services.TrainPreparer.Implementation.YOROTrainPreparer import YOROTrainPreparer
-from ..TrainPreparationEnum.TrainPreparationType import TrainPreparationType
 class TrainPreparerFactory:
     TRAIN_PREPARER_DICTIONARY = {
         TrainType.Seg:YOLOTrainPreparer,

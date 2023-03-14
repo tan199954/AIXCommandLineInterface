@@ -5,7 +5,8 @@ from TCPSocketImageBuilder import TCPSocketImageBuilder
 
 class TCPSocketImageProcessor(QtCore.QObject):
     imageReceived = QtCore.Signal(np.ndarray)
-    def __init__(self,ip:str,port:int) -> None:
+    def __init__(self,ip:str,port:int, parent: QtCore.QObject = None) -> None:
+        super().__init__(parent)
         self.ip=ip
         self.port=port
         self.socket=QtNetwork.QTcpSocket()

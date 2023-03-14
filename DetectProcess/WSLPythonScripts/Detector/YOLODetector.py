@@ -3,7 +3,7 @@ from .IDetector import IDetector
 import numpy as np
 from ultralytics import YOLO
 
-class YOLODetector(QtCore.QObject,IDetector):
+class YOLODetector(IDetector):
     PARAMETER_SEPARATOR=", "
     OBJECT_SEPARATOR="; "
     LAST_STRING_DATA="\n"

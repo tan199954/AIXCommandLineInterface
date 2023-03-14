@@ -26,7 +26,7 @@ class TCPSocketImageBuilder(QtCore.QObject):
         self.__appendImageData(curentData)
         if (not self.__imageDataIsFull()):
             return
-        self.ImageBuilt.emit(self.__convertImageData2Ndarry())
+        self.imageBuilt.emit(self.__convertImageData2Ndarry())
     def __hasBeenTotalNum(self):
         return self.totalNum >0
     def __setTotalNum(self, data:QtCore.QByteArray):

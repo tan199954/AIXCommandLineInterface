@@ -1,4 +1,5 @@
 from abc import abstractproperty
+from PySide6.QtCore import QThread
 from .....Common.ApplicationThread.ApplicationThread import AbstractQCoreApplicationThreadManager
 from .....Common.CommandPromptService.CommandPromptService import CommandPromptService
 from ....Exceptions.DatasetError import DatasetQualityError
@@ -52,14 +53,12 @@ class AbstractYOLOTrainer(AbstractQCoreApplicationThreadManager,ITrainer):
           self.YOLOCLIGenerator.decreaseLearningRate()
           self.__startTrain()
      def __onDatasetLowQuality(self):
-          self.__stopTrain()
           self.quitQCoreAppThread()
           raise DatasetQualityError('The dataset is low quality, please check the dataset')
      def __onBestModelFound(self):
-          self.__stopTrain()
+          QThread.sleep(2)
           self.quitQCoreAppThread()
      def __onErrorFinished(self,error:str):
-          self.__stopTrain()
           self.quitQCoreAppThread()
           raise RuntimeError(error)
      def __onResultReceived(self,result:str):

@@ -4,7 +4,7 @@ from ProjectFile.Src.AbstractFactory.Interfaces.IProjInfoFactory import IProjInf
 from ProjectFile.Src.AbstractFactory.ProjInfoV1Factory import ProjInfoV1Factory
 from ProjectFile.Src.Service.ProjectFileService.AIXProjFileService import AIXProjFileService
 from ProjectFile.Src.Core.Interfaces.IAIXProjCompositon import IAIXProjCompositon
-from ProjectFile.Src.Core.Interfaces.IAIXProjInfo import IAIXProjInfo
+from ProjectFile.Src.Core.Models.AIXProjInfoAggregate.AIXProjInfo import AIXProjInfoV1
 from ProjectFile.Src.Core.Models.AIXProjInfoAggregate.AIXSeedData import AIXSeedData
 from ProjectFile.Src.Core.Models.AIXProjInfoAggregate.Device import Device
 from ProjectFile.Src.Service.Common.DeviceService import DeviceService
@@ -12,37 +12,38 @@ from ProjectFile.Src.Service.Common.DeviceService import DeviceService
 
 
 class AIXProjInfoService(IAIXProjInfoService):
-    def getProjInfoFactory(self)->IProjInfoFactory:
+    @property
+    def projInfoFactory(self)->IProjInfoFactory:
         return ProjInfoV1Factory()
-    def getAIXProjInfo(self)->IAIXProjInfo:
-        self.checkExist()
+    def getAIXProjInfo(self)->AIXProjInfoV1:
+        self.__checkExist()
         aIXProjFileService=AIXProjFileService()
         dictData = aIXProjFileService.readProjFile()
-        projInfoCVT=self.getProjInfoFactory().createProjInfoConverter()
+        projInfoCVT=self.projInfoFactory.createProjInfoConverter()
         return projInfoCVT.toProjInfo(dictData)
-    def setAIXProjInfo(self,imagePath:str,laeblPath:str,objectNames:List[str]):
-        aIXSeedData=AIXSeedData(imagePath,laeblPath,objectNames)
+    def setAIXProjInfo(self,imagePath:str,labelPath:str,objectNames:List[str]):
+        aIXSeedData=AIXSeedData(imagePath,labelPath,objectNames)
         deviceService=DeviceService()
         device=Device(deviceService.getTotalFreeGPUmenmory())
         #build process
-        aIXProjInfoV1Builder=self.getProjInfoFactory().createProjInfoBuilder()
+        aIXProjInfoV1Builder=self.projInfoFactory.createProjInfoBuilder()
         aIXProjInfoV1Builder.setAIXSeedData(aIXSeedData)
         aIXProjInfoV1Builder.setDevice(device)
         aIXProjInfo = aIXProjInfoV1Builder.build()
-        projInfoCVT=self.getProjInfoFactory().createProjInfoConverter()
+        projInfoCVT=self.projInfoFactory.createProjInfoConverter()
         newDictData=projInfoCVT.toDict(aIXProjInfo)
         aIXProjFileService=AIXProjFileService()
         aIXProjFileService.writeProjFile(newDictData)
     def updateAIXProjInfo(self,aIXProjCompositon:IAIXProjCompositon):
-        self.checkExist()
+        self.__checkExist()
         aIXProjFileService=AIXProjFileService()
         dictData = aIXProjFileService.readProjFile()
-        projInfoCVT=self.getProjInfoFactory().createProjInfoConverter()
+        projInfoCVT=self.projInfoFactory.createProjInfoConverter()
         aIXProjInfo = projInfoCVT.toProjInfo(dictData)
         aIXProjInfo.update(aIXProjCompositon)
         newDictData=projInfoCVT.toDict(aIXProjInfo)
         aIXProjFileService.writeProjFile(newDictData)
-    def checkExist(self):
+    def __checkExist(self):
         aIXProjFileService=AIXProjFileService()
         if not aIXProjFileService.isExist():
             raise Exception("Could not find AIX project File\n"

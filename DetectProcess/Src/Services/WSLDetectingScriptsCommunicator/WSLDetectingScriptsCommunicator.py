@@ -20,6 +20,8 @@ class WSLDetectingScriptsCommunicator(QtCore.QObject):
     def __openServer(self):
         if not self.server.listen(QtNetwork.QHostAddress(self._ip),self._port):
             raise TcpServerError(f"WSL could not start server IP: {str(QtNetwork.QHostAddress(self._ip))} ,port: {self._port}\n")
+        sys.stdout.write(f"WSL opened server IP:  {self.server.serverAddress()} ,port: {self.server.serverPort()}\n")
+        sys.stdout.flush()
     def __onNewConnection(self):
         self.socket = self.server.nextPendingConnection()
         if self.socket.state() == QtNetwork.QTcpSocket.ConnectedState:

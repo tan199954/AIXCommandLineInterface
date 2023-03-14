@@ -23,6 +23,7 @@ class CommandPromptService(QtCore.QObject):
         if self.commandLine is None:
             raise ValueError("self.commandLine is Node")
         commandLine = "cmd /c "+self.commandLine
+        print(f"commandLine: {commandLine}")
         self.process.startCommand(commandLine)    
     def stop(self):
         if (self.process.state() == QtCore.QProcess.ProcessState.Running or self.process.state() == QtCore.QProcess.ProcessState.Starting):            

@@ -28,7 +28,6 @@ class DetectProcessor(AbstractQCoreApplicationThreadManager):
         self.wSLCommunicator.resultReceived.connect(self.__onResultReceived)
         self.wSLCommandExcutor.finished.connect(self.__onFinished)
         self.wSLCommandExcutor.errorFinished.connect(self.__onErrorFinished)
-        self.wSLCommandExcutor.errorReceived.connect(self.__onErrorReceived)
         self.appThr.app.aboutToQuit.connect(self.__cleanUpPySide6Classes)
         
         self.wSLCommandExcutor.start()
@@ -50,14 +49,12 @@ class DetectProcessor(AbstractQCoreApplicationThreadManager):
     def __onErrorFinished(self,error:str):
         self.quitQCoreAppThread()
         raise RuntimeError(error)
-    def __onErrorReceived(self,result:str):
-        self.__onErrorFinished(result)
     def __onFinished(self):
         self.quitQCoreAppThread()
     def __cleanUpPySide6Classes(self):
-        self.wSLCommandExcutor.stop()
         self.tcpSocketManager = None #smiler del pointer
         self.wSLCommunicator = None #smiler del pointer
         self.imageSourceManager = None #smiler del pointer
         for exporter in self.detectdObjectExporters:
             exporter = None #smiler del pointer
+        self.wSLCommandExcutor.stop()

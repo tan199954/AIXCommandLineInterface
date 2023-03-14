@@ -18,10 +18,10 @@ class AbstractTrainValidDatasetDistributor(IDatasetDistributor):
     def __init__(self,datasetItems:List[ImageDatasetItem]) -> None:
         self.datasetItems=datasetItems
         trainValidDatasetDirectoryFormat=self.getDatasetDirectoryFormat()
-        self.imagesTrainPath=trainValidDatasetDirectoryFormat.imagesTrainPath
-        self.imagesValidPath=trainValidDatasetDirectoryFormat.imagesValidPath
-        self.labelsTrainPath=trainValidDatasetDirectoryFormat.labelsTrainPath
-        self.labelsValidPath=trainValidDatasetDirectoryFormat.labelsValidPath
+        self.imagesTrainPath=trainValidDatasetDirectoryFormat.trainImagePath
+        self.imagesValidPath=trainValidDatasetDirectoryFormat.validImagePath
+        self.labelsTrainPath=trainValidDatasetDirectoryFormat.trainLabelPath
+        self.labelsValidPath=trainValidDatasetDirectoryFormat.validLabelPath
     @abstractclassmethod
     def getDatasetDirectoryFormat(self)->AbstractTrainValidDirectoryFormat:
         pass

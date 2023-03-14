@@ -8,4 +8,4 @@ class TrainExporterFactory:
                                TrainType.Box:BoxExporter}
     @staticmethod
     def createTrainExporter(trainType:TrainType)->ITrainExporter:
-        return TrainExporterFactory.TRAIN_EXPORTER_DICTIONARY[trainType]
+        return TrainExporterFactory.TRAIN_EXPORTER_DICTIONARY[trainType]()

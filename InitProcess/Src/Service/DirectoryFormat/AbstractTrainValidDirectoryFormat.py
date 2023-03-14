@@ -9,18 +9,18 @@ class AbstractTrainValidDirectoryFormat(IDatasetDirectoryFormat):
         self.datasetPath=os.path.join(currentPath,self.DATASET_DIR_NAME)
     @property
     @abstractmethod
-    def imagesTrainPath(self)->str:
+    def trainImagePath(self)->str:
         pass
     @property
     @abstractmethod
-    def imagesValidPath(self)->str:
+    def validImagePath(self)->str:
         pass
     @property
     @abstractmethod
-    def labelsTrainPath(self)->str:
+    def trainLabelPath(self)->str:
         pass
     @property
     @abstractmethod
-    def labelsValidPath(self)->str:
+    def validLabelPath(self)->str:
         pass
     

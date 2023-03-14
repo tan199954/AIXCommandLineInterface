@@ -11,10 +11,9 @@ class AbstractYOLOExporter(ITrainExporter):
         pass
     def __init__(self) -> None:
         super().__init__()
+    def export(self):
         self.outputPath=self.abstractYOLOOutputManager.getOutputDirPath()
         self.ouputModelFilePath=self.abstractYOLOOutputManager.getBestModelFilePath()
-    def export(self):
-        pass
 
 class BoxExporter(AbstractYOLOExporter):
     @property

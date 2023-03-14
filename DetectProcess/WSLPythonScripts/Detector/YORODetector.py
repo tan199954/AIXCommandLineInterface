@@ -3,7 +3,7 @@ from .IDetector import IDetector
 import numpy as np
 from yoro import api
 
-class YORODetector(QtCore.QObject,IDetector):
+class YORODetector(IDetector):
     PARAMETER_SEPARATOR=", "
     OBJECT_SEPARATOR="; "
     LAST_STRING_DATA="\n"
